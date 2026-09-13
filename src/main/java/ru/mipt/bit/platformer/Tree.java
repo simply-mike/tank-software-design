@@ -12,21 +12,21 @@ import static ru.mipt.bit.platformer.util.GdxGameUtils.createBoundingRectangle;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.drawTextureRegionUnscaled;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.moveRectangleAtTileCenter;
 
-public final class Tree implements Disposable {
+final class Tree implements Disposable {
 
     private final Texture texture;
     private final TextureRegion graphics;
     private final Rectangle rectangle;
     private final GridPoint2 coordinates;
 
-    public Tree(String texturePath, GridPoint2 coordinates) {
+    Tree(String texturePath, GridPoint2 coordinates) {
         texture = new Texture(texturePath);
         graphics = new TextureRegion(texture);
         rectangle = createBoundingRectangle(graphics);
         this.coordinates = new GridPoint2(coordinates);
     }
 
-    public boolean occupies(GridPoint2 tileCoordinates) {
+    boolean occupies(GridPoint2 tileCoordinates) {
         return coordinates.equals(tileCoordinates);
     }
 
@@ -34,7 +34,7 @@ public final class Tree implements Disposable {
         moveRectangleAtTileCenter(layer, rectangle, coordinates);
     }
 
-    public void draw(Batch batch) {
+    void draw(Batch batch) {
         drawTextureRegionUnscaled(batch, graphics, rectangle, 0f);
     }
 

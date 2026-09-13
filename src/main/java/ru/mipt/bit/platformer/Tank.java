@@ -12,7 +12,7 @@ import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.createBoundingRectangle;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.drawTextureRegionUnscaled;
 
-public final class Tank implements Disposable {
+final class Tank implements Disposable {
 
     private static final float MOVEMENT_DURATION = 0.4f;
 
@@ -25,7 +25,7 @@ public final class Tank implements Disposable {
     private float movementProgress = 1f;
     private Direction direction = Direction.RIGHT;
 
-    public Tank(String texturePath, GridPoint2 initialCoordinates) {
+    Tank(String texturePath, GridPoint2 initialCoordinates) {
         texture = new Texture(texturePath);
         graphics = new TextureRegion(texture);
         rectangle = createBoundingRectangle(graphics);
@@ -33,7 +33,7 @@ public final class Tank implements Disposable {
         destinationCoordinates = new GridPoint2(initialCoordinates);
     }
 
-    public void move(Direction newDirection, Field field) {
+    void move(Direction newDirection, Field field) {
         if (!isEqual(movementProgress, 1f)) {
             return;
         }
@@ -46,7 +46,7 @@ public final class Tank implements Disposable {
         }
     }
 
-    public void update(float deltaTime, Field field) {
+    void update(float deltaTime, Field field) {
         field.placeBetweenTileCenters(rectangle, coordinates, destinationCoordinates, movementProgress);
         movementProgress = continueProgress(movementProgress, deltaTime, MOVEMENT_DURATION);
         if (isEqual(movementProgress, 1f)) {
@@ -54,7 +54,7 @@ public final class Tank implements Disposable {
         }
     }
 
-    public void draw(Batch batch) {
+    void draw(Batch batch) {
         drawTextureRegionUnscaled(batch, graphics, rectangle, direction.rotation());
     }
 

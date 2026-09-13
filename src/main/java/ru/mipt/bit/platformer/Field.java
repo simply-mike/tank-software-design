@@ -14,14 +14,14 @@ import ru.mipt.bit.platformer.util.TileMovement;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.createSingleLayerMapRenderer;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.getSingleLayer;
 
-public final class Field implements Disposable {
+final class Field implements Disposable {
 
     private final TiledMap level;
     private final MapRenderer renderer;
     private final TileMovement tileMovement;
     private final Tree tree;
 
-    public Field(String levelPath, Batch batch, Tree tree) {
+    Field(String levelPath, Batch batch, Tree tree) {
         level = new TmxMapLoader().load(levelPath);
         renderer = createSingleLayerMapRenderer(level, batch);
         TiledMapTileLayer groundLayer = getSingleLayer(level);
@@ -30,7 +30,7 @@ public final class Field implements Disposable {
         tree.placeOn(groundLayer);
     }
 
-    public boolean isFree(GridPoint2 coordinates) {
+    boolean isFree(GridPoint2 coordinates) {
         return !tree.occupies(coordinates);
     }
 
@@ -39,11 +39,11 @@ public final class Field implements Disposable {
         tileMovement.moveRectangleBetweenTileCenters(rectangle, from, to, progress);
     }
 
-    public void render() {
+    void render() {
         renderer.render();
     }
 
-    public void drawObstacles(Batch batch) {
+    void drawObstacles(Batch batch) {
         tree.draw(batch);
     }
 

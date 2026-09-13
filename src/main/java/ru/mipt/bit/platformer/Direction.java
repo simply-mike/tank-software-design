@@ -3,7 +3,7 @@ package ru.mipt.bit.platformer;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.GridPoint2;
 
-public enum Direction {
+enum Direction {
 
     UP(0, 1, 90f, Input.Keys.UP, Input.Keys.W),
     LEFT(-1, 0, -180f, Input.Keys.LEFT, Input.Keys.A),
@@ -24,15 +24,15 @@ public enum Direction {
         this.letterKey = letterKey;
     }
 
-    public GridPoint2 destinationFrom(GridPoint2 origin) {
+    GridPoint2 destinationFrom(GridPoint2 origin) {
         return new GridPoint2(origin).add(deltaX, deltaY);
     }
 
-    public float rotation() {
+    float rotation() {
         return rotation;
     }
 
-    public boolean isPressed(Input input) {
+    boolean isPressed(Input input) {
         return input.isKeyPressed(arrowKey) || input.isKeyPressed(letterKey);
     }
 }
