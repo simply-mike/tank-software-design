@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.GridPoint2;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
@@ -17,18 +17,27 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     private Batch batch;
     private Field field;
+    private FieldGraphics fieldGraphics;
     private Tank tank;
+    private TankGraphics tankGraphics;
+    private Tree tree;
+    private TreeGraphics treeGraphics;
     private TankController tankController;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        List<Obstacle> obstacles = Arrays.asList(
-                new Tree("images/greenTree.png", new GridPoint2(1, 3))
-        );
-        field = new Field("level.tmx", batch, obstacles);
-        tank = new Tank("images/tank_blue.png", new GridPoint2(1, 1));
-        tankController = new TankController(Gdx.input, tank, field);
+        tree = new Tree(new GridPoint2(1, 3));
+        List<Obstacle> obstacles = Collections.singletonList(tree);
+        field = new Field(obstacles);
+        tank = new Tank(new GridPoint2(1, 1));
+
+        fieldGraphics = new FieldGraphics("level.tmx", batch);
+        tankGraphics = new TankGraphics("images/tank_blue.png");
+        treeGraphics = new TreeGraphics("images/greenTree.png");
+
+        ButtonPressHandler buttonPressHandler = new ButtonPressHandler(Gdx.input::isKeyPressed);
+        tankController = new TankController(buttonPressHandler, tank, field);
     }
 
     @Override
@@ -40,13 +49,13 @@ public class GameDesktopLauncher implements ApplicationListener {
         float deltaTime = Gdx.graphics.getDeltaTime();
 
         tankController.handleInput();
-        tank.update(deltaTime, field);
-        field.render();
+        tank.update(deltaTime);
+        fieldGraphics.render();
 
         // start recording all drawing commands
         batch.begin();
-        tank.draw(batch);
-        field.drawObstacles(batch);
+        tankGraphics.draw(batch, tank, fieldGraphics);
+        treeGraphics.draw(batch, tree, fieldGraphics);
         // submit all drawing requests
         batch.end();
     }
@@ -68,8 +77,9 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     @Override
     public void dispose() {
-        field.dispose();
-        tank.dispose();
+        fieldGraphics.dispose();
+        tankGraphics.dispose();
+        treeGraphics.dispose();
         batch.dispose();
     }
 
