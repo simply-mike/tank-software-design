@@ -6,13 +6,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.Disposable;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.createBoundingRectangle;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.drawTextureRegionUnscaled;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.moveRectangleAtTileCenter;
 
-final class Tree implements Disposable {
+final class Tree implements Obstacle {
 
     private final Texture texture;
     private final TextureRegion graphics;
@@ -26,15 +25,18 @@ final class Tree implements Disposable {
         this.coordinates = new GridPoint2(coordinates);
     }
 
-    boolean occupies(GridPoint2 tileCoordinates) {
+    @Override
+    public boolean occupies(GridPoint2 tileCoordinates) {
         return coordinates.equals(tileCoordinates);
     }
 
-    void placeOn(TiledMapTileLayer layer) {
+    @Override
+    public void placeOn(TiledMapTileLayer layer) {
         moveRectangleAtTileCenter(layer, rectangle, coordinates);
     }
 
-    void draw(Batch batch) {
+    @Override
+    public void draw(Batch batch) {
         drawTextureRegionUnscaled(batch, graphics, rectangle, 0f);
     }
 

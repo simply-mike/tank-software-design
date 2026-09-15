@@ -39,7 +39,7 @@ final class Tank implements Disposable {
         }
 
         direction = newDirection;
-        GridPoint2 destination = newDirection.destinationFrom(coordinates);
+        GridPoint2 destination = newDirection.calculateDestinationFrom(coordinates);
         if (field.isFree(destination)) {
             destinationCoordinates.set(destination);
             movementProgress = 0f;
@@ -55,7 +55,7 @@ final class Tank implements Disposable {
     }
 
     void draw(Batch batch) {
-        drawTextureRegionUnscaled(batch, graphics, rectangle, direction.rotation());
+        drawTextureRegionUnscaled(batch, graphics, rectangle, direction.getRotationDegrees());
     }
 
     @Override

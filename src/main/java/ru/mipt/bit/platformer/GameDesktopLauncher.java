@@ -8,6 +8,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.GridPoint2;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
 public class GameDesktopLauncher implements ApplicationListener {
@@ -15,13 +18,17 @@ public class GameDesktopLauncher implements ApplicationListener {
     private Batch batch;
     private Field field;
     private Tank tank;
+    private PlayerController playerController;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        Tree tree = new Tree("images/greenTree.png", new GridPoint2(1, 3));
-        field = new Field("level.tmx", batch, tree);
+        List<Obstacle> obstacles = Arrays.asList(
+                new Tree("images/greenTree.png", new GridPoint2(1, 3))
+        );
+        field = new Field("level.tmx", batch, obstacles);
         tank = new Tank("images/tank_blue.png", new GridPoint2(1, 1));
+        playerController = new PlayerController(Gdx.input, tank, field);
     }
 
     @Override
@@ -32,12 +39,7 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        for (Direction direction : Direction.values()) {
-            if (direction.isPressed(Gdx.input)) {
-                tank.move(direction, field);
-            }
-        }
-
+        playerController.handleInput();
         tank.update(deltaTime, field);
         field.render();
 
