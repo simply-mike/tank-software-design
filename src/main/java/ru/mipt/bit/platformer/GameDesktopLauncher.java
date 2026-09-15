@@ -18,7 +18,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     private Batch batch;
     private Field field;
     private Tank tank;
-    private PlayerController playerController;
+    private TankController tankController;
 
     @Override
     public void create() {
@@ -28,7 +28,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         );
         field = new Field("level.tmx", batch, obstacles);
         tank = new Tank("images/tank_blue.png", new GridPoint2(1, 1));
-        playerController = new PlayerController(Gdx.input, tank, field);
+        tankController = new TankController(Gdx.input, tank, field);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        playerController.handleInput();
+        tankController.handleInput();
         tank.update(deltaTime, field);
         field.render();
 

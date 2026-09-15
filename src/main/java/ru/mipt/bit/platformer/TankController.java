@@ -2,13 +2,13 @@ package ru.mipt.bit.platformer;
 
 import com.badlogic.gdx.Input;
 
-final class PlayerController {
+final class TankController {
 
     private final Input input;
     private final Tank tank;
     private final Field field;
 
-    PlayerController(Input input, Tank tank, Field field) {
+    TankController(Input input, Tank tank, Field field) {
         this.input = input;
         this.tank = tank;
         this.field = field;
