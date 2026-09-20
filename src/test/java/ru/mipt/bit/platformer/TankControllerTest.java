@@ -24,11 +24,11 @@ public class TankControllerTest {
 
     private static void assertMoves(int pressedKey, Direction expectedDirection) {
         Tank tank = new Tank(new GridPoint2(1, 1));
-        Field field = new Field(Collections.emptyList());
+        Field field = new Field(10, 8, Collections.emptyList());
         ButtonPressHandler handler = new ButtonPressHandler(key -> key == pressedKey);
-        TankController controller = new TankController(handler, tank, field);
+        new TankController(handler, tank, field);
 
-        controller.handleInput();
+        handler.handleInput();
 
         assertEquals(expectedDirection, tank.getDirection());
         assertEquals(expectedDirection.calculateDestinationFrom(new GridPoint2(1, 1)),

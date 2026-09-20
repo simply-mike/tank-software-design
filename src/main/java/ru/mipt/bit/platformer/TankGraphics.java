@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
 
-import static ru.mipt.bit.platformer.util.GdxGameUtils.createBoundingRectangle;
-import static ru.mipt.bit.platformer.util.GdxGameUtils.drawTextureRegionUnscaled;
+import static ru.mipt.bit.platformer.util.TextureRegionUtils.createBoundingRectangle;
+import static ru.mipt.bit.platformer.util.TextureRegionUtils.drawUnscaled;
 
 final class TankGraphics implements Disposable {
 
@@ -28,7 +28,7 @@ final class TankGraphics implements Disposable {
                 tank.getDestinationCoordinates(),
                 tank.getMovementProgress()
         );
-        drawTextureRegionUnscaled(batch, graphics, rectangle,
+        drawUnscaled(batch, graphics, rectangle,
                 tank.getDirection().getRotationDegrees());
     }
 

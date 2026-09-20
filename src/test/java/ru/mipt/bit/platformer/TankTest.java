@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
 
 public class TankTest {
 
-    private final Field emptyField = new Field(Collections.emptyList());
+    private final Field emptyField = new Field(10, 8, Collections.emptyList());
 
     @Test
     public void startsFacingRightAtInitialCoordinates() {
@@ -41,7 +41,7 @@ public class TankTest {
 
     @Test
     public void turnsButDoesNotMoveIntoObstacle() {
-        Field field = new Field(Collections.singletonList(
+        Field field = new Field(10, 8, Collections.singletonList(
                 new Tree(new GridPoint2(1, 2))
         ));
         Tank tank = new Tank(new GridPoint2(1, 1));

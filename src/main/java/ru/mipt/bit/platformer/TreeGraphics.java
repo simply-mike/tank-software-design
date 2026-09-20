@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
 
-import static ru.mipt.bit.platformer.util.GdxGameUtils.createBoundingRectangle;
-import static ru.mipt.bit.platformer.util.GdxGameUtils.drawTextureRegionUnscaled;
+import static ru.mipt.bit.platformer.util.TextureRegionUtils.createBoundingRectangle;
+import static ru.mipt.bit.platformer.util.TextureRegionUtils.drawUnscaled;
 
 final class TreeGraphics implements Disposable {
 
@@ -23,7 +23,7 @@ final class TreeGraphics implements Disposable {
 
     void draw(Batch batch, Tree tree, FieldGraphics fieldGraphics) {
         fieldGraphics.placeAtTileCenter(rectangle, tree.getCoordinates());
-        drawTextureRegionUnscaled(batch, graphics, rectangle, 0f);
+        drawUnscaled(batch, graphics, rectangle, 0f);
     }
 
     @Override
