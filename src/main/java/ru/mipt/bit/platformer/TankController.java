@@ -1,29 +1,20 @@
 package ru.mipt.bit.platformer;
 
-import com.badlogic.gdx.Input;
+import static com.badlogic.gdx.Input.Keys.A;
+import static com.badlogic.gdx.Input.Keys.D;
+import static com.badlogic.gdx.Input.Keys.DOWN;
+import static com.badlogic.gdx.Input.Keys.LEFT;
+import static com.badlogic.gdx.Input.Keys.RIGHT;
+import static com.badlogic.gdx.Input.Keys.S;
+import static com.badlogic.gdx.Input.Keys.UP;
+import static com.badlogic.gdx.Input.Keys.W;
 
 final class TankController {
 
-    private final Input input;
-    private final Tank tank;
-    private final Field field;
-
-    TankController(Input input, Tank tank, Field field) {
-        this.input = input;
-        this.tank = tank;
-        this.field = field;
-    }
-
-    void handleInput() {
-        moveIfPressed(Direction.UP, Input.Keys.UP, Input.Keys.W);
-        moveIfPressed(Direction.LEFT, Input.Keys.LEFT, Input.Keys.A);
-        moveIfPressed(Direction.DOWN, Input.Keys.DOWN, Input.Keys.S);
-        moveIfPressed(Direction.RIGHT, Input.Keys.RIGHT, Input.Keys.D);
-    }
-
-    private void moveIfPressed(Direction direction, int arrowKey, int letterKey) {
-        if (input.isKeyPressed(arrowKey) || input.isKeyPressed(letterKey)) {
-            tank.move(direction, field);
-        }
+    TankController(ButtonPressHandler buttonPressHandler, Tank tank, Field field) {
+        buttonPressHandler.bind(() -> tank.move(Direction.UP, field), UP, W);
+        buttonPressHandler.bind(() -> tank.move(Direction.LEFT, field), LEFT, A);
+        buttonPressHandler.bind(() -> tank.move(Direction.DOWN, field), DOWN, S);
+        buttonPressHandler.bind(() -> tank.move(Direction.RIGHT, field), RIGHT, D);
     }
 }
