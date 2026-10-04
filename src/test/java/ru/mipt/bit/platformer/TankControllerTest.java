@@ -23,7 +23,7 @@ public class TankControllerTest {
     }
 
     private static void assertMoves(int pressedKey, Direction expectedDirection) {
-        Tank tank = new Tank(new GridPoint2(1, 1));
+        Tank tank = new Tank(new GridPoint2(1, 1), 0.4f);
         Field field = new Field(10, 8, Collections.emptyList());
         ButtonPressHandler handler = new ButtonPressHandler(key -> key == pressedKey);
         new TankController(handler, tank, field);

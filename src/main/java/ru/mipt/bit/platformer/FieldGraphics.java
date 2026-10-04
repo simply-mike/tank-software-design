@@ -15,7 +15,7 @@ import ru.mipt.bit.platformer.util.TileMovement;
 
 import java.util.NoSuchElementException;
 
-final class FieldGraphics implements Disposable {
+final class FieldGraphics implements Disposable, TilePlacement {
 
     private final TiledMap level;
     private final MapRenderer renderer;
@@ -28,12 +28,14 @@ final class FieldGraphics implements Disposable {
         tileMovement = new TileMovement(groundLayer, Interpolation.smooth);
     }
 
-    void placeAtTileCenter(Rectangle rectangle, GridPoint2 coordinates) {
+    @Override
+    public void placeAtTileCenter(Rectangle rectangle, GridPoint2 coordinates) {
         tileMovement.moveRectangleAtTileCenter(rectangle, coordinates);
     }
 
-    void placeBetweenTileCenters(Rectangle rectangle, GridPoint2 from,
-                                 GridPoint2 to, float progress) {
+    @Override
+    public void placeBetweenTileCenters(Rectangle rectangle, GridPoint2 from,
+                                        GridPoint2 to, float progress) {
         tileMovement.moveRectangleBetweenTileCenters(rectangle, from, to, progress);
     }
 

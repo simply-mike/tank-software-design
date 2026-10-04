@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.GridPoint2;
 import java.util.ArrayList;
 import java.util.List;
 
-final class Field {
+final class Field implements TileAvailability {
 
     private final int width;
     private final int height;
@@ -17,7 +17,8 @@ final class Field {
         this.obstacles = new ArrayList<>(obstacles);
     }
 
-    boolean isFree(GridPoint2 coordinates) {
+    @Override
+    public boolean isFree(GridPoint2 coordinates) {
         if (coordinates.x < 0 || coordinates.x >= width
                 || coordinates.y < 0 || coordinates.y >= height) {
             return false;

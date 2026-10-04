@@ -21,8 +21,8 @@ final class TankGraphics implements Disposable {
         rectangle = createBoundingRectangle(graphics);
     }
 
-    void draw(Batch batch, Tank tank, FieldGraphics fieldGraphics) {
-        fieldGraphics.placeBetweenTileCenters(
+    void draw(Batch batch, Tank tank, TilePlacement tiles) {
+        tiles.placeBetweenTileCenters(
                 rectangle,
                 tank.getCoordinates(),
                 tank.getDestinationCoordinates(),
