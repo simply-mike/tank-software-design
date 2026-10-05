@@ -6,21 +6,23 @@ final class Tank {
 
     private final GridPoint2 coordinates;
     private final GridPoint2 destinationCoordinates;
+    private final TileAvailability tiles;
     private final float movementDuration;
 
     private float movementProgress = 1f;
     private Direction direction = Direction.RIGHT;
 
-    Tank(GridPoint2 initialCoordinates, float movementDuration) {
+    Tank(GridPoint2 initialCoordinates, TileAvailability tiles, float movementDuration) {
         if (movementDuration <= 0f || !Float.isFinite(movementDuration)) {
             throw new IllegalArgumentException("Movement duration must be positive and finite");
         }
         coordinates = new GridPoint2(initialCoordinates);
         destinationCoordinates = new GridPoint2(initialCoordinates);
+        this.tiles = tiles;
         this.movementDuration = movementDuration;
     }
 
-    void move(Direction newDirection, TileAvailability tiles) {
+    void move(Direction newDirection) {
         if (movementProgress < 1f) {
             return;
         }

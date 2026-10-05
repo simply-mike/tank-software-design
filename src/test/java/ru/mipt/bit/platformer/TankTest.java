@@ -14,7 +14,7 @@ public class TankTest {
 
     @Test
     public void startsFacingRightAtInitialCoordinates() {
-        Tank tank = new Tank(new GridPoint2(1, 1), MOVEMENT_DURATION);
+        Tank tank = new Tank(new GridPoint2(1, 1), emptyField, MOVEMENT_DURATION);
 
         assertEquals(new GridPoint2(1, 1), tank.getCoordinates());
         assertEquals(new GridPoint2(1, 1), tank.getDestinationCoordinates());
@@ -24,9 +24,9 @@ public class TankTest {
 
     @Test
     public void movesToFreeAdjacentTile() {
-        Tank tank = new Tank(new GridPoint2(1, 1), MOVEMENT_DURATION);
+        Tank tank = new Tank(new GridPoint2(1, 1), emptyField, MOVEMENT_DURATION);
 
-        tank.move(Direction.UP, emptyField);
+        tank.move(Direction.UP);
         tank.update(0.2f);
 
         assertEquals(Direction.UP, tank.getDirection());
@@ -45,9 +45,9 @@ public class TankTest {
         Field field = new Field(10, 8, Collections.singletonList(
                 new Tree(new GridPoint2(1, 2))
         ));
-        Tank tank = new Tank(new GridPoint2(1, 1), MOVEMENT_DURATION);
+        Tank tank = new Tank(new GridPoint2(1, 1), field, MOVEMENT_DURATION);
 
-        tank.move(Direction.UP, field);
+        tank.move(Direction.UP);
 
         assertEquals(Direction.UP, tank.getDirection());
         assertEquals(new GridPoint2(1, 1), tank.getDestinationCoordinates());
@@ -56,10 +56,10 @@ public class TankTest {
 
     @Test
     public void ignoresNewDirectionWhileMoving() {
-        Tank tank = new Tank(new GridPoint2(1, 1), MOVEMENT_DURATION);
+        Tank tank = new Tank(new GridPoint2(1, 1), emptyField, MOVEMENT_DURATION);
 
-        tank.move(Direction.RIGHT, emptyField);
-        tank.move(Direction.UP, emptyField);
+        tank.move(Direction.RIGHT);
+        tank.move(Direction.UP);
 
         assertEquals(Direction.RIGHT, tank.getDirection());
         assertEquals(new GridPoint2(2, 1), tank.getDestinationCoordinates());
@@ -68,7 +68,7 @@ public class TankTest {
     @Test
     public void doesNotExposeMutableCoordinates() {
         GridPoint2 initialCoordinates = new GridPoint2(1, 1);
-        Tank tank = new Tank(initialCoordinates, MOVEMENT_DURATION);
+        Tank tank = new Tank(initialCoordinates, emptyField, MOVEMENT_DURATION);
 
         initialCoordinates.set(3, 3);
         tank.getCoordinates().set(4, 4);
@@ -80,9 +80,9 @@ public class TankTest {
 
     @Test
     public void usesConfiguredMovementDuration() {
-        Tank tank = new Tank(new GridPoint2(1, 1), 0.8f);
+        Tank tank = new Tank(new GridPoint2(1, 1), emptyField, 0.8f);
 
-        tank.move(Direction.UP, emptyField);
+        tank.move(Direction.UP);
         tank.update(0.2f);
 
         assertEquals(0.25f, tank.getMovementProgress(), 0.0001f);
@@ -90,9 +90,9 @@ public class TankTest {
 
     @Test
     public void acceptsAnyTileAvailabilityImplementation() {
-        Tank tank = new Tank(new GridPoint2(1, 1), MOVEMENT_DURATION);
+        Tank tank = new Tank(new GridPoint2(1, 1), coordinates -> false, MOVEMENT_DURATION);
 
-        tank.move(Direction.UP, coordinates -> false);
+        tank.move(Direction.UP);
 
         assertEquals(Direction.UP, tank.getDirection());
         assertEquals(new GridPoint2(1, 1), tank.getDestinationCoordinates());
