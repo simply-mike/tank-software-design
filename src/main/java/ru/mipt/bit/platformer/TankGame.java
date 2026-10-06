@@ -4,6 +4,15 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import ru.mipt.bit.platformer.graphics.FieldGraphics;
+import ru.mipt.bit.platformer.graphics.TankGraphics;
+import ru.mipt.bit.platformer.graphics.TreeGraphics;
+import ru.mipt.bit.platformer.input.ButtonPressHandler;
+import ru.mipt.bit.platformer.input.TankController;
+import ru.mipt.bit.platformer.level.Level;
+import ru.mipt.bit.platformer.model.Tank;
+import ru.mipt.bit.platformer.model.Tree;
+
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
 final class TankGame extends ApplicationAdapter {

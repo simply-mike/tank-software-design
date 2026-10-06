@@ -1,6 +1,7 @@
-package ru.mipt.bit.platformer;
+package ru.mipt.bit.platformer.level;
 
 import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.model.Tree;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,11 +9,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-final class FileLevelSource implements LevelSource {
+public final class FileLevelSource implements LevelSource {
 
     private final Path path;
 
-    FileLevelSource(Path path) {
+    public FileLevelSource(Path path) {
         this.path = path;
     }
 

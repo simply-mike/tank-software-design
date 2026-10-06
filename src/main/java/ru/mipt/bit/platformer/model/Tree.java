@@ -1,12 +1,12 @@
-package ru.mipt.bit.platformer;
+package ru.mipt.bit.platformer.model;
 
 import com.badlogic.gdx.math.GridPoint2;
 
-final class Tree implements Obstacle {
+public final class Tree implements Obstacle {
 
     private final GridPoint2 coordinates;
 
-    Tree(GridPoint2 coordinates) {
+    public Tree(GridPoint2 coordinates) {
         this.coordinates = new GridPoint2(coordinates);
     }
 
@@ -15,7 +15,7 @@ final class Tree implements Obstacle {
         return coordinates.equals(tileCoordinates);
     }
 
-    GridPoint2 getCoordinates() {
+    public GridPoint2 getCoordinates() {
         return new GridPoint2(coordinates);
     }
 }

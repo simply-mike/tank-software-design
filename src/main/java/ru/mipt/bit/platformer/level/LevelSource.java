@@ -1,7 +1,7 @@
-package ru.mipt.bit.platformer;
+package ru.mipt.bit.platformer.level;
 
 import java.io.IOException;
 
-interface LevelSource {
+public interface LevelSource {
     Level load() throws IOException;
 }

@@ -1,7 +1,8 @@
-package ru.mipt.bit.platformer;
+package ru.mipt.bit.platformer.level;
 
 import com.badlogic.gdx.math.GridPoint2;
 import org.junit.Test;
+import ru.mipt.bit.platformer.model.Tree;
 
 import java.io.IOException;
 import java.nio.file.Files;

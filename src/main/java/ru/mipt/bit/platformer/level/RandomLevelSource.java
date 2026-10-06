@@ -1,19 +1,20 @@
-package ru.mipt.bit.platformer;
+package ru.mipt.bit.platformer.level;
 
 import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.model.Tree;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-final class RandomLevelSource implements LevelSource {
+public final class RandomLevelSource implements LevelSource {
 
     private final int width;
     private final int height;
     private final Random random;
 
-    RandomLevelSource(int width, int height, Random random) {
+    public RandomLevelSource(int width, int height, Random random) {
         if (width <= 0 || height <= 0) {
             throw new IllegalArgumentException("Level dimensions must be positive");
         }

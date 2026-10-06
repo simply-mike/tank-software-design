@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer;
+package ru.mipt.bit.platformer.graphics;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapRenderer;
@@ -11,17 +11,17 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
-import ru.mipt.bit.platformer.util.TileMovement;
+import ru.mipt.bit.platformer.graphics.util.TileMovement;
 
 import java.util.NoSuchElementException;
 
-final class FieldGraphics implements Disposable, TilePlacement {
+public final class FieldGraphics implements Disposable, TilePlacement {
 
     private final TiledMap level;
     private final MapRenderer renderer;
     private final TileMovement tileMovement;
 
-    FieldGraphics(String levelPath, Batch batch, int width, int height) {
+    public FieldGraphics(String levelPath, Batch batch, int width, int height) {
         level = new TmxMapLoader().load(levelPath);
         TiledMapTileLayer groundLayer = getSingleLayer(level);
         if (groundLayer.getWidth() != width || groundLayer.getHeight() != height) {
@@ -52,7 +52,7 @@ final class FieldGraphics implements Disposable, TilePlacement {
         tileMovement.moveRectangleBetweenTileCenters(rectangle, from, to, progress);
     }
 
-    void render() {
+    public void render() {
         renderer.render();
     }
 

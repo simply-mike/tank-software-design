@@ -1,11 +1,14 @@
-package ru.mipt.bit.platformer;
+package ru.mipt.bit.platformer.level;
 
 import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.model.Field;
+import ru.mipt.bit.platformer.model.Obstacle;
+import ru.mipt.bit.platformer.model.Tree;
 
 import java.util.ArrayList;
 import java.util.List;
 
-final class Level {
+public final class Level {
 
     private final int width;
     private final int height;
@@ -33,23 +36,23 @@ final class Level {
         }
     }
 
-    int getWidth() {
+    public int getWidth() {
         return width;
     }
 
-    int getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    List<Tree> getTrees() {
+    public List<Tree> getTrees() {
         return trees;
     }
 
-    GridPoint2 getPlayerPosition() {
+    public GridPoint2 getPlayerPosition() {
         return new GridPoint2(playerPosition);
     }
 
-    Field getField() {
+    public Field getField() {
         return field;
     }
 }
