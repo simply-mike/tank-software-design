@@ -11,10 +11,10 @@ import static com.badlogic.gdx.Input.Keys.W;
 
 final class TankController {
 
-    TankController(ButtonPressHandler buttonPressHandler, Tank tank, Field field) {
-        buttonPressHandler.bind(() -> tank.move(Direction.UP, field), UP, W);
-        buttonPressHandler.bind(() -> tank.move(Direction.LEFT, field), LEFT, A);
-        buttonPressHandler.bind(() -> tank.move(Direction.DOWN, field), DOWN, S);
-        buttonPressHandler.bind(() -> tank.move(Direction.RIGHT, field), RIGHT, D);
+    TankController(ButtonPressHandler buttonPressHandler, Tank tank) {
+        buttonPressHandler.bind(() -> tank.move(Direction.UP), UP, W);
+        buttonPressHandler.bind(() -> tank.move(Direction.LEFT), LEFT, A);
+        buttonPressHandler.bind(() -> tank.move(Direction.DOWN), DOWN, S);
+        buttonPressHandler.bind(() -> tank.move(Direction.RIGHT), RIGHT, D);
     }
 }

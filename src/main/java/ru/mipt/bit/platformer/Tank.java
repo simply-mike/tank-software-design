@@ -4,27 +4,32 @@ import com.badlogic.gdx.math.GridPoint2;
 
 final class Tank {
 
-    private static final float MOVEMENT_DURATION = 0.4f;
-
     private final GridPoint2 coordinates;
     private final GridPoint2 destinationCoordinates;
+    private final TileAvailability tiles;
+    private final float movementDuration;
 
     private float movementProgress = 1f;
     private Direction direction = Direction.RIGHT;
 
-    Tank(GridPoint2 initialCoordinates) {
+    Tank(GridPoint2 initialCoordinates, TileAvailability tiles, float movementDuration) {
+        if (movementDuration <= 0f || !Float.isFinite(movementDuration)) {
+            throw new IllegalArgumentException("Movement duration must be positive and finite");
+        }
         coordinates = new GridPoint2(initialCoordinates);
         destinationCoordinates = new GridPoint2(initialCoordinates);
+        this.tiles = tiles;
+        this.movementDuration = movementDuration;
     }
 
-    void move(Direction newDirection, Field field) {
+    void move(Direction newDirection) {
         if (movementProgress < 1f) {
             return;
         }
 
         direction = newDirection;
         GridPoint2 destination = newDirection.calculateDestinationFrom(coordinates);
-        if (field.isFree(destination)) {
+        if (tiles.isFree(destination)) {
             destinationCoordinates.set(destination);
             movementProgress = 0f;
         }
@@ -32,7 +37,7 @@ final class Tank {
 
     void update(float deltaTime) {
         movementProgress = Math.max(0f,
-                Math.min(movementProgress + deltaTime / MOVEMENT_DURATION, 1f));
+                Math.min(movementProgress + deltaTime / movementDuration, 1f));
         if (movementProgress == 1f) {
             coordinates.set(destinationCoordinates);
         }

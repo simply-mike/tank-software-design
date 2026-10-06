@@ -15,6 +15,7 @@ final class TankGame extends ApplicationAdapter {
 
     private static final int FIELD_WIDTH = 10;
     private static final int FIELD_HEIGHT = 8;
+    private static final float TANK_MOVEMENT_DURATION = 0.4f;
 
     private Batch batch;
     private FieldGraphics fieldGraphics;
@@ -30,14 +31,14 @@ final class TankGame extends ApplicationAdapter {
         tree = new Tree(new GridPoint2(1, 3));
         List<Obstacle> obstacles = Collections.singletonList(tree);
         Field field = new Field(FIELD_WIDTH, FIELD_HEIGHT, obstacles);
-        tank = new Tank(new GridPoint2(1, 1));
+        tank = new Tank(new GridPoint2(1, 1), field, TANK_MOVEMENT_DURATION);
 
         fieldGraphics = new FieldGraphics("level.tmx", batch);
         tankGraphics = new TankGraphics("images/tank_blue.png");
         treeGraphics = new TreeGraphics("images/greenTree.png");
 
         buttonPressHandler = new ButtonPressHandler(Gdx.input::isKeyPressed);
-        new TankController(buttonPressHandler, tank, field);
+        new TankController(buttonPressHandler, tank);
     }
 
     @Override

@@ -21,8 +21,8 @@ final class TreeGraphics implements Disposable {
         rectangle = createBoundingRectangle(graphics);
     }
 
-    void draw(Batch batch, Tree tree, FieldGraphics fieldGraphics) {
-        fieldGraphics.placeAtTileCenter(rectangle, tree.getCoordinates());
+    void draw(Batch batch, Tree tree, TilePlacement tiles) {
+        tiles.placeAtTileCenter(rectangle, tree.getCoordinates());
         drawUnscaled(batch, graphics, rectangle, 0f);
     }
 
