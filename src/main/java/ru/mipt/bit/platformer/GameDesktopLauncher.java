@@ -3,15 +3,27 @@ package ru.mipt.bit.platformer;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Random;
+
 public final class GameDesktopLauncher {
 
     private GameDesktopLauncher() {
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        if (args.length > 1) {
+            throw new IllegalArgumentException("Usage: [random | path-to-level.txt]");
+        }
+        LevelSource source = args.length == 1 && args[0].equals("random")
+                ? new RandomLevelSource(10, 8, new Random())
+                : new FileLevelSource(Path.of(args.length == 0
+                        ? "src/main/resources/level.txt" : args[0]));
+        Level level = source.load();
+
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-        // level width: 10 tiles x 128px, height: 8 tiles x 128px
-        config.setWindowedMode(1280, 1024);
-        new Lwjgl3Application(new TankGame(), config);
+        config.setWindowedMode(level.getWidth() * 128, level.getHeight() * 128);
+        new Lwjgl3Application(new TankGame(level), config);
     }
 }

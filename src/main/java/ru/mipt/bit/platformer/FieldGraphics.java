@@ -21,9 +21,22 @@ final class FieldGraphics implements Disposable, TilePlacement {
     private final MapRenderer renderer;
     private final TileMovement tileMovement;
 
-    FieldGraphics(String levelPath, Batch batch) {
+    FieldGraphics(String levelPath, Batch batch, int width, int height) {
         level = new TmxMapLoader().load(levelPath);
         TiledMapTileLayer groundLayer = getSingleLayer(level);
+        if (groundLayer.getWidth() != width || groundLayer.getHeight() != height) {
+            TiledMapTileLayer resized = new TiledMapTileLayer(
+                    width, height, groundLayer.getTileWidth(), groundLayer.getTileHeight());
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    resized.setCell(x, y, groundLayer.getCell(
+                            x % groundLayer.getWidth(), y % groundLayer.getHeight()));
+                }
+            }
+            level.getLayers().remove(groundLayer);
+            level.getLayers().add(resized);
+            groundLayer = resized;
+        }
         renderer = createRenderer(level, groundLayer, batch);
         tileMovement = new TileMovement(groundLayer, Interpolation.smooth);
     }
