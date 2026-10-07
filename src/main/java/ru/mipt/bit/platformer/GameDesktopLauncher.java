@@ -1,5 +1,6 @@
 package ru.mipt.bit.platformer;
 
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import ru.mipt.bit.platformer.level.FileLevelSource;
@@ -22,12 +23,16 @@ public final class GameDesktopLauncher {
         }
         LevelSource source = args.length == 1 && args[0].equals("random")
                 ? new RandomLevelSource(10, 8, new Random())
-                : new FileLevelSource(Path.of(args.length == 0
-                        ? "src/main/resources/level.txt" : args[0]));
+                : new FileLevelSource(args.length == 0
+                        ? GameDesktopLauncher.class.getResource("/level.txt")
+                        : Path.of(args[0]).toUri().toURL());
         Level level = source.load();
 
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-        config.setWindowedMode(level.getWidth() * 128, level.getHeight() * 128);
+        Graphics.DisplayMode display = Lwjgl3ApplicationConfiguration.getDisplayMode();
+        config.setWindowedMode(
+                (int) Math.min(level.getWidth() * 128L, display.width * 9L / 10),
+                (int) Math.min(level.getHeight() * 128L, display.height * 9L / 10));
         new Lwjgl3Application(new TankGame(level), config);
     }
 }

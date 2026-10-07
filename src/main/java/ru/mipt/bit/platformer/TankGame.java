@@ -34,7 +34,7 @@ final class TankGame extends ApplicationAdapter {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        tank = new Tank(level.getPlayerPosition(), level.getField(), TANK_MOVEMENT_DURATION);
+        tank = new Tank(level.getPlayerPosition(), level, TANK_MOVEMENT_DURATION);
 
         fieldGraphics = new FieldGraphics("level.tmx", batch, level.getWidth(), level.getHeight());
         tankGraphics = new TankGraphics("images/tank_blue.png");
@@ -59,6 +59,11 @@ final class TankGame extends ApplicationAdapter {
             treeGraphics.draw(batch, tree, fieldGraphics);
         }
         batch.end();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        fieldGraphics.resize(width, height);
     }
 
     @Override

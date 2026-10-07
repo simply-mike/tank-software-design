@@ -12,6 +12,9 @@ public final class Field implements TileAvailability {
     private final List<Obstacle> obstacles;
 
     public Field(int width, int height, List<Obstacle> obstacles) {
+        if (width <= 0 || height <= 0) {
+            throw new IllegalArgumentException("Field dimensions must be positive");
+        }
         this.width = width;
         this.height = height;
         this.obstacles = new ArrayList<>(obstacles);

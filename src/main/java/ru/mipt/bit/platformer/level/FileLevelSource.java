@@ -3,23 +3,33 @@ package ru.mipt.bit.platformer.level;
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.model.Tree;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public final class FileLevelSource implements LevelSource {
 
-    private final Path path;
+    private final URL source;
 
-    public FileLevelSource(Path path) {
-        this.path = path;
+    public FileLevelSource(URL source) {
+        this.source = Objects.requireNonNull(source, "Level file not found");
     }
 
     @Override
     public Level load() throws IOException {
-        List<String> rows = Files.readAllLines(path);
+        List<String> rows = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(source.openStream(), StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                rows.add(line);
+            }
+        }
         if (rows.isEmpty() || rows.get(0).isEmpty()) {
             throw new IllegalArgumentException("Level must contain at least one tile");
         }

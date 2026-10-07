@@ -1,8 +1,10 @@
 package ru.mipt.bit.platformer.graphics;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -11,6 +13,7 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import ru.mipt.bit.platformer.graphics.util.TileMovement;
 
 import java.util.NoSuchElementException;
@@ -20,6 +23,8 @@ public final class FieldGraphics implements Disposable, TilePlacement {
     private final TiledMap level;
     private final MapRenderer renderer;
     private final TileMovement tileMovement;
+    private final OrthographicCamera camera;
+    private final FitViewport viewport;
 
     public FieldGraphics(String levelPath, Batch batch, int width, int height) {
         level = new TmxMapLoader().load(levelPath);
@@ -37,7 +42,11 @@ public final class FieldGraphics implements Disposable, TilePlacement {
             level.getLayers().add(resized);
             groundLayer = resized;
         }
-        renderer = createRenderer(level, groundLayer, batch);
+        renderer = new OrthogonalTiledMapRenderer(level, batch);
+        camera = new OrthographicCamera();
+        viewport = new FitViewport(width * groundLayer.getTileWidth(),
+                height * groundLayer.getTileHeight(), camera);
+        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         tileMovement = new TileMovement(groundLayer, Interpolation.smooth);
     }
 
@@ -53,7 +62,13 @@ public final class FieldGraphics implements Disposable, TilePlacement {
     }
 
     public void render() {
+        viewport.apply();
+        renderer.setView(camera);
         renderer.render();
+    }
+
+    public void resize(int width, int height) {
+        viewport.update(width, height, true);
     }
 
     @Override
@@ -70,17 +85,5 @@ public final class FieldGraphics implements Disposable, TilePlacement {
             throw new IllegalArgumentException("Map has more than one layer");
         }
         return (TiledMapTileLayer) layers.iterator().next();
-    }
-
-    private static MapRenderer createRenderer(TiledMap map, TiledMapTileLayer layer,
-                                              Batch batch) {
-        OrthogonalTiledMapRenderer renderer = new OrthogonalTiledMapRenderer(map, batch);
-        renderer.getViewBounds().set(
-                0f,
-                0f,
-                layer.getWidth() * layer.getTileWidth(),
-                layer.getHeight() * layer.getTileHeight()
-        );
-        return renderer;
     }
 }

@@ -3,12 +3,13 @@ package ru.mipt.bit.platformer.level;
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.model.Field;
 import ru.mipt.bit.platformer.model.Obstacle;
+import ru.mipt.bit.platformer.model.TileAvailability;
 import ru.mipt.bit.platformer.model.Tree;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Level {
+public final class Level implements TileAvailability {
 
     private final int width;
     private final int height;
@@ -52,7 +53,8 @@ public final class Level {
         return new GridPoint2(playerPosition);
     }
 
-    public Field getField() {
-        return field;
+    @Override
+    public boolean isFree(GridPoint2 coordinates) {
+        return field.isFree(coordinates);
     }
 }
