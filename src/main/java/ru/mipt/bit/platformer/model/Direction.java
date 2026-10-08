@@ -1,8 +1,8 @@
-package ru.mipt.bit.platformer;
+package ru.mipt.bit.platformer.model;
 
 import com.badlogic.gdx.math.GridPoint2;
 
-enum Direction {
+public enum Direction {
 
     UP(0, 1, 90f),
     LEFT(-1, 0, -180f),
@@ -17,11 +17,11 @@ enum Direction {
         this.rotation = rotation;
     }
 
-    GridPoint2 calculateDestinationFrom(GridPoint2 origin) {
+    public GridPoint2 calculateDestinationFrom(GridPoint2 origin) {
         return new GridPoint2(origin).add(vector);
     }
 
-    float getRotationDegrees() {
+    public float getRotationDegrees() {
         return rotation;
     }
 }

@@ -1,8 +1,11 @@
-package ru.mipt.bit.platformer;
+package ru.mipt.bit.platformer.input;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.GridPoint2;
 import org.junit.Test;
+import ru.mipt.bit.platformer.model.Direction;
+import ru.mipt.bit.platformer.model.Field;
+import ru.mipt.bit.platformer.model.Tank;
 
 import java.util.Collections;
 

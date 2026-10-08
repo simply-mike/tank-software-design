@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer;
+package ru.mipt.bit.platformer.model;
 
 import com.badlogic.gdx.math.GridPoint2;
 import org.junit.Test;
@@ -42,5 +42,10 @@ public class FieldTest {
         assertFalse(field.isFree(new GridPoint2(0, -1)));
         assertFalse(field.isFree(new GridPoint2(WIDTH, 0)));
         assertFalse(field.isFree(new GridPoint2(0, HEIGHT)));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void rejectsEmptyField() {
+        new Field(0, HEIGHT, java.util.Collections.emptyList());
     }
 }

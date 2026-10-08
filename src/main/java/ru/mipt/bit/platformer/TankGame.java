@@ -4,36 +4,39 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.GridPoint2;
-
-import java.util.Collections;
-import java.util.List;
+import ru.mipt.bit.platformer.graphics.FieldGraphics;
+import ru.mipt.bit.platformer.graphics.TankGraphics;
+import ru.mipt.bit.platformer.graphics.TreeGraphics;
+import ru.mipt.bit.platformer.input.ButtonPressHandler;
+import ru.mipt.bit.platformer.input.TankController;
+import ru.mipt.bit.platformer.level.Level;
+import ru.mipt.bit.platformer.model.Tank;
+import ru.mipt.bit.platformer.model.Tree;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
 final class TankGame extends ApplicationAdapter {
 
-    private static final int FIELD_WIDTH = 10;
-    private static final int FIELD_HEIGHT = 8;
     private static final float TANK_MOVEMENT_DURATION = 0.4f;
 
+    private final Level level;
     private Batch batch;
     private FieldGraphics fieldGraphics;
     private Tank tank;
     private TankGraphics tankGraphics;
-    private Tree tree;
     private TreeGraphics treeGraphics;
     private ButtonPressHandler buttonPressHandler;
+
+    TankGame(Level level) {
+        this.level = level;
+    }
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        tree = new Tree(new GridPoint2(1, 3));
-        List<Obstacle> obstacles = Collections.singletonList(tree);
-        Field field = new Field(FIELD_WIDTH, FIELD_HEIGHT, obstacles);
-        tank = new Tank(new GridPoint2(1, 1), field, TANK_MOVEMENT_DURATION);
+        tank = new Tank(level.getPlayerPosition(), level, TANK_MOVEMENT_DURATION);
 
-        fieldGraphics = new FieldGraphics("level.tmx", batch);
+        fieldGraphics = new FieldGraphics("level.tmx", batch, level.getWidth(), level.getHeight());
         tankGraphics = new TankGraphics("images/tank_blue.png");
         treeGraphics = new TreeGraphics("images/greenTree.png");
 
@@ -52,8 +55,15 @@ final class TankGame extends ApplicationAdapter {
 
         batch.begin();
         tankGraphics.draw(batch, tank, fieldGraphics);
-        treeGraphics.draw(batch, tree, fieldGraphics);
+        for (Tree tree : level.getTrees()) {
+            treeGraphics.draw(batch, tree, fieldGraphics);
+        }
         batch.end();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        fieldGraphics.resize(width, height);
     }
 
     @Override

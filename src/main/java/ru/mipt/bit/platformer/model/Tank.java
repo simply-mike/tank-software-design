@@ -1,8 +1,8 @@
-package ru.mipt.bit.platformer;
+package ru.mipt.bit.platformer.model;
 
 import com.badlogic.gdx.math.GridPoint2;
 
-final class Tank {
+public final class Tank {
 
     private final GridPoint2 coordinates;
     private final GridPoint2 destinationCoordinates;
@@ -12,7 +12,7 @@ final class Tank {
     private float movementProgress = 1f;
     private Direction direction = Direction.RIGHT;
 
-    Tank(GridPoint2 initialCoordinates, TileAvailability tiles, float movementDuration) {
+    public Tank(GridPoint2 initialCoordinates, TileAvailability tiles, float movementDuration) {
         if (movementDuration <= 0f || !Float.isFinite(movementDuration)) {
             throw new IllegalArgumentException("Movement duration must be positive and finite");
         }
@@ -22,7 +22,7 @@ final class Tank {
         this.movementDuration = movementDuration;
     }
 
-    void move(Direction newDirection) {
+    public void move(Direction newDirection) {
         if (movementProgress < 1f) {
             return;
         }
@@ -35,7 +35,7 @@ final class Tank {
         }
     }
 
-    void update(float deltaTime) {
+    public void update(float deltaTime) {
         movementProgress = Math.max(0f,
                 Math.min(movementProgress + deltaTime / movementDuration, 1f));
         if (movementProgress == 1f) {
@@ -43,19 +43,19 @@ final class Tank {
         }
     }
 
-    GridPoint2 getCoordinates() {
+    public GridPoint2 getCoordinates() {
         return new GridPoint2(coordinates);
     }
 
-    GridPoint2 getDestinationCoordinates() {
+    public GridPoint2 getDestinationCoordinates() {
         return new GridPoint2(destinationCoordinates);
     }
 
-    float getMovementProgress() {
+    public float getMovementProgress() {
         return movementProgress;
     }
 
-    Direction getDirection() {
+    public Direction getDirection() {
         return direction;
     }
 }

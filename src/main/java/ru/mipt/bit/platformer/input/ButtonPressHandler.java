@@ -1,15 +1,15 @@
-package ru.mipt.bit.platformer;
+package ru.mipt.bit.platformer.input;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntPredicate;
 
-final class ButtonPressHandler {
+public final class ButtonPressHandler {
 
     private final IntPredicate isPressed;
     private final List<Binding> bindings = new ArrayList<>();
 
-    ButtonPressHandler(IntPredicate isPressed) {
+    public ButtonPressHandler(IntPredicate isPressed) {
         this.isPressed = isPressed;
     }
 
@@ -17,7 +17,7 @@ final class ButtonPressHandler {
         bindings.add(new Binding(action, keyCodes));
     }
 
-    void handleInput() {
+    public void handleInput() {
         for (Binding binding : bindings) {
             binding.runIfPressed(isPressed);
         }

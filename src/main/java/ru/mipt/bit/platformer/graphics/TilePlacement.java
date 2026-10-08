@@ -1,9 +1,9 @@
-package ru.mipt.bit.platformer;
+package ru.mipt.bit.platformer.graphics;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Rectangle;
 
-interface TilePlacement {
+public interface TilePlacement {
 
     void placeAtTileCenter(Rectangle rectangle, GridPoint2 coordinates);
 

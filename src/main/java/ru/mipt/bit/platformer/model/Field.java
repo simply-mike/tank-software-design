@@ -1,17 +1,20 @@
-package ru.mipt.bit.platformer;
+package ru.mipt.bit.platformer.model;
 
 import com.badlogic.gdx.math.GridPoint2;
 
 import java.util.ArrayList;
 import java.util.List;
 
-final class Field implements TileAvailability {
+public final class Field implements TileAvailability {
 
     private final int width;
     private final int height;
     private final List<Obstacle> obstacles;
 
-    Field(int width, int height, List<Obstacle> obstacles) {
+    public Field(int width, int height, List<Obstacle> obstacles) {
+        if (width <= 0 || height <= 0) {
+            throw new IllegalArgumentException("Field dimensions must be positive");
+        }
         this.width = width;
         this.height = height;
         this.obstacles = new ArrayList<>(obstacles);
