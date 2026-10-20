@@ -6,6 +6,9 @@ import org.junit.Test;
 import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 public class TankTest {
 
@@ -96,5 +99,46 @@ public class TankTest {
 
         assertEquals(Direction.UP, tank.getDirection());
         assertEquals(new GridPoint2(1, 1), tank.getDestinationCoordinates());
+    }
+
+    @Test
+    public void cannotMoveBeyondAnyBoundary() {
+        Field field = new Field(1, 1, Collections.emptyList());
+        Tank tank = field.spawnTank(new GridPoint2(0, 0), MOVEMENT_DURATION);
+
+        for (Direction direction : Direction.values()) {
+            tank.move(direction);
+            tank.update(MOVEMENT_DURATION);
+            assertEquals(direction, tank.getDirection());
+            assertEquals(new GridPoint2(0, 0), tank.getCoordinates());
+            assertFalse(tank.isMoving());
+        }
+    }
+
+    @Test
+    public void occupiesOnlySourceAndDestinationDuringMove() {
+        Tank tank = emptyField.spawnTank(new GridPoint2(1, 1), MOVEMENT_DURATION);
+        assertTrue(tank.occupies(new GridPoint2(1, 1)));
+        assertFalse(tank.occupies(new GridPoint2(2, 1)));
+
+        tank.move(Direction.RIGHT);
+        assertTrue(tank.isMoving());
+        assertTrue(tank.occupies(new GridPoint2(1, 1)));
+        assertTrue(tank.occupies(new GridPoint2(2, 1)));
+        assertFalse(tank.occupies(new GridPoint2(3, 1)));
+
+        tank.update(MOVEMENT_DURATION * 2);
+        assertFalse(tank.isMoving());
+        assertFalse(tank.occupies(new GridPoint2(1, 1)));
+        assertTrue(tank.occupies(new GridPoint2(2, 1)));
+        assertEquals(1f, tank.getMovementProgress(), 0f);
+    }
+
+    @Test
+    public void rejectsInvalidMovementDuration() {
+        for (float duration : new float[]{0f, -1f, Float.NaN, Float.POSITIVE_INFINITY}) {
+            assertThrows(IllegalArgumentException.class,
+                    () -> new Tank(new GridPoint2(0, 0), emptyField, duration));
+        }
     }
 }

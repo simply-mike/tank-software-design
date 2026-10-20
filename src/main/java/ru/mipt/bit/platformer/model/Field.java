@@ -20,6 +20,15 @@ public final class Field implements TileAvailability {
         this.obstacles = new ArrayList<>(obstacles);
     }
 
+    public Tank spawnTank(GridPoint2 coordinates, float movementDuration) {
+        if (!isFree(coordinates)) {
+            throw new IllegalArgumentException("Tank must start on a free tile");
+        }
+        Tank tank = new Tank(coordinates, this, movementDuration);
+        obstacles.add(tank);
+        return tank;
+    }
+
     @Override
     public boolean isFree(GridPoint2 coordinates) {
         if (coordinates.x < 0 || coordinates.x >= width

@@ -1,5 +1,6 @@
 package ru.mipt.bit.platformer.input;
 
+import ru.mipt.bit.platformer.command.MoveTankCommand;
 import ru.mipt.bit.platformer.model.Direction;
 import ru.mipt.bit.platformer.model.Tank;
 
@@ -12,12 +13,20 @@ import static com.badlogic.gdx.Input.Keys.S;
 import static com.badlogic.gdx.Input.Keys.UP;
 import static com.badlogic.gdx.Input.Keys.W;
 
-public final class TankController {
+public final class TankController implements TankControlStrategy {
+
+    private final ButtonPressHandler buttonPressHandler;
 
     public TankController(ButtonPressHandler buttonPressHandler, Tank tank) {
-        buttonPressHandler.bind(() -> tank.move(Direction.UP), UP, W);
-        buttonPressHandler.bind(() -> tank.move(Direction.LEFT), LEFT, A);
-        buttonPressHandler.bind(() -> tank.move(Direction.DOWN), DOWN, S);
-        buttonPressHandler.bind(() -> tank.move(Direction.RIGHT), RIGHT, D);
+        this.buttonPressHandler = buttonPressHandler;
+        buttonPressHandler.bind(new MoveTankCommand(tank, Direction.UP), UP, W);
+        buttonPressHandler.bind(new MoveTankCommand(tank, Direction.LEFT), LEFT, A);
+        buttonPressHandler.bind(new MoveTankCommand(tank, Direction.DOWN), DOWN, S);
+        buttonPressHandler.bind(new MoveTankCommand(tank, Direction.RIGHT), RIGHT, D);
+    }
+
+    @Override
+    public void control() {
+        buttonPressHandler.handleInput();
     }
 }
