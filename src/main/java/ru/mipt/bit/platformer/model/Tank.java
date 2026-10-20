@@ -12,7 +12,7 @@ public final class Tank implements Obstacle {
     private float movementProgress = 1f;
     private Direction direction = Direction.RIGHT;
 
-    public Tank(GridPoint2 initialCoordinates, TileAvailability tiles, float movementDuration) {
+    Tank(GridPoint2 initialCoordinates, TileAvailability tiles, float movementDuration) {
         if (movementDuration <= 0f || !Float.isFinite(movementDuration)) {
             throw new IllegalArgumentException("Movement duration must be positive and finite");
         }

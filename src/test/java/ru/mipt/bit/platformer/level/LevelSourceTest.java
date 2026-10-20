@@ -36,12 +36,15 @@ public class LevelSourceTest {
             assertTrue(level.isFree(new GridPoint2(2, 2)));
             assertFalse(level.isFree(new GridPoint2(3, 0)));
 
-            Tank tank = new Tank(level.getPlayerPosition(), level, 0.4f);
+            Tank tank = level.spawnTank(level.getPlayerPosition(), 0.4f);
+            assertFalse(level.isFree(level.getPlayerPosition()));
             tank.move(Direction.RIGHT);
             assertEquals(new GridPoint2(0, 1), tank.getDestinationCoordinates());
             tank.move(Direction.DOWN);
             tank.update(0.4f);
             assertEquals(new GridPoint2(0, 0), tank.getCoordinates());
+            assertTrue(level.isFree(level.getPlayerPosition()));
+            assertFalse(level.isFree(tank.getCoordinates()));
         } finally {
             Files.deleteIfExists(path);
         }
