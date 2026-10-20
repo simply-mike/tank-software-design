@@ -3,6 +3,7 @@ package ru.mipt.bit.platformer.level;
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.model.Field;
 import ru.mipt.bit.platformer.model.Obstacle;
+import ru.mipt.bit.platformer.model.Tank;
 import ru.mipt.bit.platformer.model.TileAvailability;
 import ru.mipt.bit.platformer.model.Tree;
 
@@ -51,6 +52,10 @@ public final class Level implements TileAvailability {
 
     public GridPoint2 getPlayerPosition() {
         return new GridPoint2(playerPosition);
+    }
+
+    public Tank spawnTank(GridPoint2 coordinates, float movementDuration) {
+        return field.spawnTank(coordinates, movementDuration);
     }
 
     @Override

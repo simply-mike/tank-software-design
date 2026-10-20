@@ -11,3 +11,8 @@ Run one of these commands:
 In a level file, `T` is a tree, `X` is the tank start position, and `_` is an
 empty cell. Each line is one row. All rows must have the same length. Use one
 `X`.
+
+Move with the arrow keys or WASD. Each level gets up to five AI tanks that
+move randomly.
+
+Run tests with `./gradlew test`.

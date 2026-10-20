@@ -29,9 +29,9 @@ public class TankControllerTest {
         Field field = new Field(10, 8, Collections.emptyList());
         Tank tank = new Tank(new GridPoint2(1, 1), field, 0.4f);
         ButtonPressHandler handler = new ButtonPressHandler(key -> key == pressedKey);
-        new TankController(handler, tank);
+        TankControlStrategy controller = new TankController(handler, tank);
 
-        handler.handleInput();
+        controller.control();
 
         assertEquals(expectedDirection, tank.getDirection());
         assertEquals(expectedDirection.calculateDestinationFrom(new GridPoint2(1, 1)),

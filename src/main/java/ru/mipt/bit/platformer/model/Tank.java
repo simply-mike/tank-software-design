@@ -2,7 +2,7 @@ package ru.mipt.bit.platformer.model;
 
 import com.badlogic.gdx.math.GridPoint2;
 
-public final class Tank {
+public final class Tank implements Obstacle {
 
     private final GridPoint2 coordinates;
     private final GridPoint2 destinationCoordinates;
@@ -23,7 +23,7 @@ public final class Tank {
     }
 
     public void move(Direction newDirection) {
-        if (movementProgress < 1f) {
+        if (isMoving()) {
             return;
         }
 
@@ -57,5 +57,14 @@ public final class Tank {
 
     public Direction getDirection() {
         return direction;
+    }
+
+    public boolean isMoving() {
+        return movementProgress < 1f;
+    }
+
+    @Override
+    public boolean occupies(GridPoint2 tileCoordinates) {
+        return coordinates.equals(tileCoordinates) || destinationCoordinates.equals(tileCoordinates);
     }
 }
