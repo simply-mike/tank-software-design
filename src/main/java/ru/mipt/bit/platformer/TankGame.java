@@ -24,10 +24,9 @@ import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
 final class TankGame extends ApplicationAdapter {
 
-    private static final float TANK_MOVEMENT_DURATION = 0.4f;
-    private static final int AI_TANK_COUNT = 5;
-
     private final Level level;
+    private final int aiTankCount;
+    private final float tankMovementDuration;
     private final List<Tank> tanks = new ArrayList<>();
     private final List<TankControlStrategy> controllers = new ArrayList<>();
     private Batch batch;
@@ -35,20 +34,22 @@ final class TankGame extends ApplicationAdapter {
     private TankGraphics tankGraphics;
     private TreeGraphics treeGraphics;
 
-    TankGame(Level level) {
+    TankGame(Level level, int aiTankCount, float tankMovementDuration) {
         this.level = level;
+        this.aiTankCount = aiTankCount;
+        this.tankMovementDuration = tankMovementDuration;
     }
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        Tank player = level.spawnTank(level.getPlayerPosition(), TANK_MOVEMENT_DURATION);
+        Tank player = level.spawnTank(level.getPlayerPosition(), tankMovementDuration);
         tanks.add(player);
         ButtonPressHandler keyboard = new ButtonPressHandler(Gdx.input::isKeyPressed);
         controllers.add(new TankController(keyboard, player));
 
         Random random = new Random();
-        for (Tank tank : new RandomTankSpawner(random).spawn(level, AI_TANK_COUNT, TANK_MOVEMENT_DURATION)) {
+        for (Tank tank : new RandomTankSpawner(random).spawn(level, aiTankCount, tankMovementDuration)) {
             tanks.add(tank);
             controllers.add(new RandomTankController(tank, random));
         }
