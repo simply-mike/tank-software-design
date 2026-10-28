@@ -13,11 +13,11 @@ import static org.junit.Assert.assertTrue;
 public class TankTest {
 
     private static final float MOVEMENT_DURATION = 0.4f;
-    private final Field emptyField = new Field(10, 8, Collections.emptyList());
+    private final Level emptyLevel = new Level(10, 8, Collections.emptyList(), new GridPoint2(0, 0));
 
     @Test
     public void startsFacingRightAtInitialCoordinates() {
-        Tank tank = new Tank(new GridPoint2(1, 1), emptyField, MOVEMENT_DURATION);
+        Tank tank = new Tank(new GridPoint2(1, 1), emptyLevel, MOVEMENT_DURATION);
 
         assertEquals(new GridPoint2(1, 1), tank.getCoordinates());
         assertEquals(new GridPoint2(1, 1), tank.getDestinationCoordinates());
@@ -27,7 +27,7 @@ public class TankTest {
 
     @Test
     public void movesToFreeAdjacentTile() {
-        Tank tank = new Tank(new GridPoint2(1, 1), emptyField, MOVEMENT_DURATION);
+        Tank tank = new Tank(new GridPoint2(1, 1), emptyLevel, MOVEMENT_DURATION);
 
         tank.move(Direction.UP);
         tank.update(0.2f);
@@ -45,10 +45,10 @@ public class TankTest {
 
     @Test
     public void turnsButDoesNotMoveIntoObstacle() {
-        Field field = new Field(10, 8, Collections.singletonList(
+        Level level = new Level(10, 8, Collections.singletonList(
                 new Tree(new GridPoint2(1, 2))
-        ));
-        Tank tank = new Tank(new GridPoint2(1, 1), field, MOVEMENT_DURATION);
+        ), new GridPoint2(0, 0));
+        Tank tank = new Tank(new GridPoint2(1, 1), level, MOVEMENT_DURATION);
 
         tank.move(Direction.UP);
 
@@ -59,7 +59,7 @@ public class TankTest {
 
     @Test
     public void ignoresNewDirectionWhileMoving() {
-        Tank tank = new Tank(new GridPoint2(1, 1), emptyField, MOVEMENT_DURATION);
+        Tank tank = new Tank(new GridPoint2(1, 1), emptyLevel, MOVEMENT_DURATION);
 
         tank.move(Direction.RIGHT);
         tank.move(Direction.UP);
@@ -71,7 +71,7 @@ public class TankTest {
     @Test
     public void doesNotExposeMutableCoordinates() {
         GridPoint2 initialCoordinates = new GridPoint2(1, 1);
-        Tank tank = new Tank(initialCoordinates, emptyField, MOVEMENT_DURATION);
+        Tank tank = new Tank(initialCoordinates, emptyLevel, MOVEMENT_DURATION);
 
         initialCoordinates.set(3, 3);
         tank.getCoordinates().set(4, 4);
@@ -83,7 +83,7 @@ public class TankTest {
 
     @Test
     public void usesConfiguredMovementDuration() {
-        Tank tank = new Tank(new GridPoint2(1, 1), emptyField, 0.8f);
+        Tank tank = new Tank(new GridPoint2(1, 1), emptyLevel, 0.8f);
 
         tank.move(Direction.UP);
         tank.update(0.2f);
@@ -103,8 +103,8 @@ public class TankTest {
 
     @Test
     public void cannotMoveBeyondAnyBoundary() {
-        Field field = new Field(1, 1, Collections.emptyList());
-        Tank tank = field.spawnTank(new GridPoint2(0, 0), MOVEMENT_DURATION);
+        Level level = new Level(1, 1, Collections.emptyList(), new GridPoint2(0, 0));
+        Tank tank = level.spawnTank(new GridPoint2(0, 0), MOVEMENT_DURATION);
 
         for (Direction direction : Direction.values()) {
             tank.move(direction);
@@ -117,7 +117,7 @@ public class TankTest {
 
     @Test
     public void occupiesOnlySourceAndDestinationDuringMove() {
-        Tank tank = emptyField.spawnTank(new GridPoint2(1, 1), MOVEMENT_DURATION);
+        Tank tank = emptyLevel.spawnTank(new GridPoint2(1, 1), MOVEMENT_DURATION);
         assertTrue(tank.occupies(new GridPoint2(1, 1)));
         assertFalse(tank.occupies(new GridPoint2(2, 1)));
 
@@ -138,7 +138,7 @@ public class TankTest {
     public void rejectsInvalidMovementDuration() {
         for (float duration : new float[]{0f, -1f, Float.NaN, Float.POSITIVE_INFINITY}) {
             assertThrows(IllegalArgumentException.class,
-                    () -> new Tank(new GridPoint2(0, 0), emptyField, duration));
+                    () -> new Tank(new GridPoint2(0, 0), emptyLevel, duration));
         }
     }
 }

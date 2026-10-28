@@ -4,7 +4,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import ru.mipt.bit.platformer.level.FileLevelSource;
-import ru.mipt.bit.platformer.level.Level;
+import ru.mipt.bit.platformer.model.Level;
 import ru.mipt.bit.platformer.level.LevelSource;
 import ru.mipt.bit.platformer.level.RandomLevelSource;
 

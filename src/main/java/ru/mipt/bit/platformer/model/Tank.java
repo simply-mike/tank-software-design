@@ -35,6 +35,7 @@ public final class Tank implements Obstacle {
         }
     }
 
+    @Override
     public void update(float deltaTime) {
         movementProgress = Math.max(0f,
                 Math.min(movementProgress + deltaTime / movementDuration, 1f));

@@ -11,9 +11,10 @@ import ru.mipt.bit.platformer.input.ButtonPressHandler;
 import ru.mipt.bit.platformer.input.RandomTankController;
 import ru.mipt.bit.platformer.input.TankControlStrategy;
 import ru.mipt.bit.platformer.input.TankController;
-import ru.mipt.bit.platformer.level.Level;
+import ru.mipt.bit.platformer.model.Level;
 import ru.mipt.bit.platformer.level.RandomTankSpawner;
 import ru.mipt.bit.platformer.model.Tank;
+import ru.mipt.bit.platformer.model.LevelObject;
 import ru.mipt.bit.platformer.model.Tree;
 
 import java.util.ArrayList;
@@ -27,7 +28,6 @@ final class TankGame extends ApplicationAdapter {
     private final Level level;
     private final int aiTankCount;
     private final float tankMovementDuration;
-    private final List<Tank> tanks = new ArrayList<>();
     private final List<TankControlStrategy> controllers = new ArrayList<>();
     private Batch batch;
     private FieldGraphics fieldGraphics;
@@ -44,13 +44,11 @@ final class TankGame extends ApplicationAdapter {
     public void create() {
         batch = new SpriteBatch();
         Tank player = level.spawnTank(level.getPlayerPosition(), tankMovementDuration);
-        tanks.add(player);
         ButtonPressHandler keyboard = new ButtonPressHandler(Gdx.input::isKeyPressed);
         controllers.add(new TankController(keyboard, player));
 
         Random random = new Random();
         for (Tank tank : new RandomTankSpawner(random).spawn(level, aiTankCount, tankMovementDuration)) {
-            tanks.add(tank);
             controllers.add(new RandomTankController(tank, random));
         }
 
@@ -68,14 +66,14 @@ final class TankGame extends ApplicationAdapter {
             controller.control();
         }
         float deltaTime = Gdx.graphics.getDeltaTime();
-        for (Tank tank : tanks) {
-            tank.update(deltaTime);
-        }
+        level.update(deltaTime);
         fieldGraphics.render();
 
         batch.begin();
-        for (Tank tank : tanks) {
-            tankGraphics.draw(batch, tank, fieldGraphics);
+        for (LevelObject object : level.getObjects()) {
+            if (object instanceof Tank) {
+                tankGraphics.draw(batch, (Tank) object, fieldGraphics);
+            }
         }
         for (Tree tree : level.getTrees()) {
             treeGraphics.draw(batch, tree, fieldGraphics);

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.GridPoint2;
 import org.junit.Test;
 import ru.mipt.bit.platformer.model.Direction;
-import ru.mipt.bit.platformer.model.Field;
+import ru.mipt.bit.platformer.model.Level;
 import ru.mipt.bit.platformer.model.Tank;
 
 import java.util.Collections;
@@ -26,8 +26,8 @@ public class TankControllerTest {
     }
 
     private static void assertMoves(int pressedKey, Direction expectedDirection) {
-        Field field = new Field(10, 8, Collections.emptyList());
-        Tank tank = field.spawnTank(new GridPoint2(1, 1), 0.4f);
+        Level level = new Level(10, 8, Collections.emptyList(), new GridPoint2(0, 0));
+        Tank tank = level.spawnTank(new GridPoint2(1, 1), 0.4f);
         ButtonPressHandler handler = new ButtonPressHandler(key -> key == pressedKey);
         TankControlStrategy controller = new TankController(handler, tank);
 

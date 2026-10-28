@@ -1,5 +1,7 @@
 package ru.mipt.bit.platformer.level;
 
+import ru.mipt.bit.platformer.model.Level;
+
 import com.badlogic.gdx.math.GridPoint2;
 import org.junit.Test;
 import ru.mipt.bit.platformer.model.Direction;
