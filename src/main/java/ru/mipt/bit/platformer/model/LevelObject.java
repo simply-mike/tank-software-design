@@ -8,4 +8,8 @@ public interface LevelObject {
 
     default void update(float deltaTime) {
     }
+
+    default boolean isDestroyed() {
+        return false;
+    }
 }

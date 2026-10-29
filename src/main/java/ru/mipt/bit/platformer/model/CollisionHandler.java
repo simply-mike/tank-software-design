@@ -22,7 +22,7 @@ final class CollisionHandler implements TileAvailability {
             return false;
         }
         for (LevelObject object : objects) {
-            if (object instanceof Obstacle && object.occupies(coordinates)) {
+            if (!object.isDestroyed() && object instanceof Obstacle && object.occupies(coordinates)) {
                 return false;
             }
         }
@@ -32,5 +32,32 @@ final class CollisionHandler implements TileAvailability {
     boolean isInside(GridPoint2 coordinates) {
         return coordinates.x >= 0 && coordinates.x < width
                 && coordinates.y >= 0 && coordinates.y < height;
+    }
+
+    void resolve(Bullet bullet) {
+        if (bullet.isDestroyed()) {
+            return;
+        }
+        GridPoint2 position = bullet.getCoordinates();
+        if (!isInside(position)) {
+            bullet.destroy();
+            return;
+        }
+        for (LevelObject object : objects) {
+            if (object == bullet || bullet.wasFiredBy(object) || object.isDestroyed()
+                    || !object.occupies(position)) {
+                continue;
+            }
+            if (object instanceof Tank) {
+                ((Tank) object).takeDamage(bullet.getDamage());
+            }
+            if (object instanceof Bullet) {
+                ((Bullet) object).destroy();
+            }
+            if (object instanceof Obstacle || object instanceof Bullet) {
+                bullet.destroy();
+                return;
+            }
+        }
     }
 }

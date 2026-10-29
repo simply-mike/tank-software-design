@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.GridPoint2;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public final class Level implements TileAvailability {
@@ -56,11 +57,17 @@ public final class Level implements TileAvailability {
     }
 
     public Tank spawnTank(GridPoint2 coordinates, float movementDuration) {
+        return spawnTank(coordinates, movementDuration, 3, new BulletSettings(1, 0.1f));
+    }
+
+    public Tank spawnTank(GridPoint2 coordinates, float movementDuration,
+                          int health, BulletSettings bulletSettings) {
         if (!isFree(coordinates)) {
             throw new IllegalArgumentException("Tank must start on a free tile");
         }
-        Tank tank = new Tank(coordinates, collisions, movementDuration);
-        objects.add(tank);
+        Tank tank = new Tank(coordinates, collisions, movementDuration,
+                health, bulletSettings, this::add, collisions::resolve);
+        add(tank);
         return tank;
     }
 
@@ -70,8 +77,28 @@ public final class Level implements TileAvailability {
     }
 
     public void update(float deltaTime) {
-        for (LevelObject object : objects) {
-            object.update(deltaTime);
+        if (deltaTime < 0f || !Float.isFinite(deltaTime)) {
+            throw new IllegalArgumentException("Tick duration must be non-negative and finite");
+        }
+        List<LevelObject> tickObjects = List.copyOf(objects);
+        // Resolve spawn contacts before tanks can leave their starting cells.
+        for (LevelObject object : tickObjects) {
+            if (object instanceof Bullet) {
+                collisions.resolve((Bullet) object);
+            }
+        }
+        for (LevelObject object : tickObjects) {
+            if (!object.isDestroyed() && objects.contains(object)) {
+                object.update(deltaTime);
+            }
+        }
+        objects.removeIf(LevelObject::isDestroyed);
+    }
+
+    public void add(LevelObject object) {
+        Objects.requireNonNull(object);
+        if (!object.isDestroyed() && !objects.contains(object)) {
+            objects.add(object);
         }
     }
 }

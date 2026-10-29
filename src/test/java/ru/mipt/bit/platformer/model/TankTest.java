@@ -17,7 +17,7 @@ public class TankTest {
 
     @Test
     public void startsFacingRightAtInitialCoordinates() {
-        Tank tank = new Tank(new GridPoint2(1, 1), emptyLevel, MOVEMENT_DURATION);
+        Tank tank = createTank(new GridPoint2(1, 1), emptyLevel, MOVEMENT_DURATION);
 
         assertEquals(new GridPoint2(1, 1), tank.getCoordinates());
         assertEquals(new GridPoint2(1, 1), tank.getDestinationCoordinates());
@@ -27,7 +27,7 @@ public class TankTest {
 
     @Test
     public void movesToFreeAdjacentTile() {
-        Tank tank = new Tank(new GridPoint2(1, 1), emptyLevel, MOVEMENT_DURATION);
+        Tank tank = createTank(new GridPoint2(1, 1), emptyLevel, MOVEMENT_DURATION);
 
         tank.move(Direction.UP);
         tank.update(0.2f);
@@ -48,7 +48,7 @@ public class TankTest {
         Level level = new Level(10, 8, Collections.singletonList(
                 new Tree(new GridPoint2(1, 2))
         ), new GridPoint2(0, 0));
-        Tank tank = new Tank(new GridPoint2(1, 1), level, MOVEMENT_DURATION);
+        Tank tank = createTank(new GridPoint2(1, 1), level, MOVEMENT_DURATION);
 
         tank.move(Direction.UP);
 
@@ -59,7 +59,7 @@ public class TankTest {
 
     @Test
     public void ignoresNewDirectionWhileMoving() {
-        Tank tank = new Tank(new GridPoint2(1, 1), emptyLevel, MOVEMENT_DURATION);
+        Tank tank = createTank(new GridPoint2(1, 1), emptyLevel, MOVEMENT_DURATION);
 
         tank.move(Direction.RIGHT);
         tank.move(Direction.UP);
@@ -71,7 +71,7 @@ public class TankTest {
     @Test
     public void doesNotExposeMutableCoordinates() {
         GridPoint2 initialCoordinates = new GridPoint2(1, 1);
-        Tank tank = new Tank(initialCoordinates, emptyLevel, MOVEMENT_DURATION);
+        Tank tank = createTank(initialCoordinates, emptyLevel, MOVEMENT_DURATION);
 
         initialCoordinates.set(3, 3);
         tank.getCoordinates().set(4, 4);
@@ -83,7 +83,7 @@ public class TankTest {
 
     @Test
     public void usesConfiguredMovementDuration() {
-        Tank tank = new Tank(new GridPoint2(1, 1), emptyLevel, 0.8f);
+        Tank tank = createTank(new GridPoint2(1, 1), emptyLevel, 0.8f);
 
         tank.move(Direction.UP);
         tank.update(0.2f);
@@ -93,7 +93,7 @@ public class TankTest {
 
     @Test
     public void acceptsAnyTileAvailabilityImplementation() {
-        Tank tank = new Tank(new GridPoint2(1, 1), coordinates -> false, MOVEMENT_DURATION);
+        Tank tank = createTank(new GridPoint2(1, 1), coordinates -> false, MOVEMENT_DURATION);
 
         tank.move(Direction.UP);
 
@@ -138,7 +138,14 @@ public class TankTest {
     public void rejectsInvalidMovementDuration() {
         for (float duration : new float[]{0f, -1f, Float.NaN, Float.POSITIVE_INFINITY}) {
             assertThrows(IllegalArgumentException.class,
-                    () -> new Tank(new GridPoint2(0, 0), emptyLevel, duration));
+                    () -> createTank(new GridPoint2(0, 0), emptyLevel, duration));
         }
     }
+
+    private Tank createTank(GridPoint2 coordinates, TileAvailability tiles, float duration) {
+        CollisionHandler collisions = new CollisionHandler(10, 8, emptyLevel.getObjects());
+        return new Tank(coordinates, tiles, duration, 3, new BulletSettings(1, 0.1f),
+                emptyLevel::add, collisions::resolve);
+    }
+
 }

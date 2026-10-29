@@ -8,12 +8,32 @@ import org.junit.Test;
 import ru.mipt.bit.platformer.model.Direction;
 import ru.mipt.bit.platformer.model.Level;
 import ru.mipt.bit.platformer.model.Tank;
+import ru.mipt.bit.platformer.model.Bullet;
 
 import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 public class TankControllerTest {
+
+    @Test
+    public void spaceQueuesShootingThroughTheSameCommandPipeline() {
+        Level level = new Level(4, 4, List.of(), new GridPoint2(0, 0));
+        Tank tank = level.spawnTank(new GridPoint2(1, 1), 0.4f);
+        List<Command> commands = new ArrayList<>();
+        ButtonPressHandler handler = new ButtonPressHandler(key -> key == Input.Keys.SPACE, commands::add);
+        new TankController(handler, tank).control();
+        assertEquals(1, level.getObjects().size());
+        assertEquals(1, commands.size());
+
+        commands.get(0).execute();
+
+        Bullet bullet = (Bullet) level.getObjects().get(1);
+        assertEquals(new GridPoint2(2, 1), bullet.getCoordinates());
+        assertEquals(Direction.RIGHT, bullet.getDirection());
+    }
 
     @Test
     public void mapsArrowAndLetterKeysToDirections() {
