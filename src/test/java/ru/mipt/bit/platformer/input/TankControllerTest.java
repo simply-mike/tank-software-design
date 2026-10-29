@@ -1,5 +1,7 @@
 package ru.mipt.bit.platformer.input;
 
+import ru.mipt.bit.platformer.command.Command;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.GridPoint2;
 import org.junit.Test;
@@ -28,7 +30,7 @@ public class TankControllerTest {
     private static void assertMoves(int pressedKey, Direction expectedDirection) {
         Level level = new Level(10, 8, Collections.emptyList(), new GridPoint2(0, 0));
         Tank tank = level.spawnTank(new GridPoint2(1, 1), 0.4f);
-        ButtonPressHandler handler = new ButtonPressHandler(key -> key == pressedKey);
+        ButtonPressHandler handler = new ButtonPressHandler(key -> key == pressedKey, Command::execute);
         TankControlStrategy controller = new TankController(handler, tank);
 
         controller.control();

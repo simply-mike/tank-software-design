@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import ru.mipt.bit.platformer.command.Command;
 import ru.mipt.bit.platformer.graphics.FieldGraphics;
 import ru.mipt.bit.platformer.graphics.TankGraphics;
 import ru.mipt.bit.platformer.graphics.TreeGraphics;
@@ -29,6 +30,7 @@ final class TankGame extends ApplicationAdapter {
     private final int aiTankCount;
     private final float tankMovementDuration;
     private final List<TankControlStrategy> controllers = new ArrayList<>();
+    private final List<Command> commands = new ArrayList<>();
     private Batch batch;
     private FieldGraphics fieldGraphics;
     private TankGraphics tankGraphics;
@@ -44,12 +46,12 @@ final class TankGame extends ApplicationAdapter {
     public void create() {
         batch = new SpriteBatch();
         Tank player = level.spawnTank(level.getPlayerPosition(), tankMovementDuration);
-        ButtonPressHandler keyboard = new ButtonPressHandler(Gdx.input::isKeyPressed);
+        ButtonPressHandler keyboard = new ButtonPressHandler(Gdx.input::isKeyPressed, commands::add);
         controllers.add(new TankController(keyboard, player));
 
         Random random = new Random();
         for (Tank tank : new RandomTankSpawner(random).spawn(level, aiTankCount, tankMovementDuration)) {
-            controllers.add(new RandomTankController(tank, random));
+            controllers.add(new RandomTankController(tank, random, commands::add));
         }
 
         fieldGraphics = new FieldGraphics("level.tmx", batch, level.getWidth(), level.getHeight());
@@ -62,8 +64,12 @@ final class TankGame extends ApplicationAdapter {
         Gdx.gl.glClearColor(0f, 0f, 0.2f, 1f);
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 
+        commands.clear();
         for (TankControlStrategy controller : controllers) {
             controller.control();
+        }
+        for (Command command : commands) {
+            command.execute();
         }
         float deltaTime = Gdx.graphics.getDeltaTime();
         level.update(deltaTime);

@@ -4,15 +4,18 @@ import ru.mipt.bit.platformer.command.Command;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.IntPredicate;
 
 public final class ButtonPressHandler {
 
     private final IntPredicate isPressed;
+    private final Consumer<Command> submit;
     private final List<Binding> bindings = new ArrayList<>();
 
-    public ButtonPressHandler(IntPredicate isPressed) {
+    public ButtonPressHandler(IntPredicate isPressed, Consumer<Command> submit) {
         this.isPressed = isPressed;
+        this.submit = submit;
     }
 
     void bind(Command action, int... keyCodes) {
@@ -21,7 +24,7 @@ public final class ButtonPressHandler {
 
     public void handleInput() {
         for (Binding binding : bindings) {
-            binding.runIfPressed(isPressed);
+            binding.submitIfPressed(isPressed, submit);
         }
     }
 
@@ -35,10 +38,10 @@ public final class ButtonPressHandler {
             this.keyCodes = keyCodes.clone();
         }
 
-        private void runIfPressed(IntPredicate isPressed) {
+        private void submitIfPressed(IntPredicate isPressed, Consumer<Command> submit) {
             for (int keyCode : keyCodes) {
                 if (isPressed.test(keyCode)) {
-                    action.execute();
+                    submit.accept(action);
                     return;
                 }
             }

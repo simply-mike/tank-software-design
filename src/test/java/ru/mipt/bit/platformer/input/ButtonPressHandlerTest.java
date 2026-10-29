@@ -1,8 +1,12 @@
 package ru.mipt.bit.platformer.input;
 
+import ru.mipt.bit.platformer.command.Command;
+
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -12,10 +16,25 @@ import static org.junit.Assert.assertEquals;
 public class ButtonPressHandlerTest {
 
     @Test
+    public void collectsActionsBeforeExecutingThemInBindingOrder() {
+        List<Command> commands = new ArrayList<>();
+        List<Integer> calls = new ArrayList<>();
+        ButtonPressHandler handler = new ButtonPressHandler(key -> true, commands::add);
+        handler.bind(() -> calls.add(1), 1);
+        handler.bind(() -> calls.add(2), 2);
+
+        handler.handleInput();
+        assertEquals(List.of(), calls);
+        assertEquals(2, commands.size());
+        commands.forEach(Command::execute);
+        assertEquals(List.of(1, 2), calls);
+    }
+
+    @Test
     public void runsActionWhenAnyBoundKeyIsPressed() {
         Set<Integer> pressedKeys = new HashSet<>(Arrays.asList(2, 3));
         AtomicInteger calls = new AtomicInteger();
-        ButtonPressHandler handler = new ButtonPressHandler(pressedKeys::contains);
+        ButtonPressHandler handler = new ButtonPressHandler(pressedKeys::contains, Command::execute);
         handler.bind(calls::incrementAndGet, 1, 2, 3);
 
         handler.handleInput();
@@ -26,7 +45,7 @@ public class ButtonPressHandlerTest {
     @Test
     public void skipsActionWhenNoBoundKeyIsPressed() {
         AtomicInteger calls = new AtomicInteger();
-        ButtonPressHandler handler = new ButtonPressHandler(key -> false);
+        ButtonPressHandler handler = new ButtonPressHandler(key -> false, Command::execute);
         handler.bind(calls::incrementAndGet, 1);
 
         handler.handleInput();
@@ -38,7 +57,7 @@ public class ButtonPressHandlerTest {
     public void supportsIndependentActions() {
         AtomicInteger movementCalls = new AtomicInteger();
         AtomicInteger firingCalls = new AtomicInteger();
-        ButtonPressHandler handler = new ButtonPressHandler(key -> key == 1 || key == 2);
+        ButtonPressHandler handler = new ButtonPressHandler(key -> key == 1 || key == 2, Command::execute);
         handler.bind(movementCalls::incrementAndGet, 1);
         handler.bind(firingCalls::incrementAndGet, 2);
 

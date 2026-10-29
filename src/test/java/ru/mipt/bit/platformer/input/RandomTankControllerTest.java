@@ -1,5 +1,7 @@
 package ru.mipt.bit.platformer.input;
 
+import ru.mipt.bit.platformer.command.Command;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.GridPoint2;
 import org.junit.Test;
@@ -9,6 +11,7 @@ import ru.mipt.bit.platformer.model.Tank;
 import ru.mipt.bit.platformer.model.Tree;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
@@ -18,10 +21,24 @@ import static org.junit.Assert.assertTrue;
 public class RandomTankControllerTest {
 
     @Test
+    public void defersItsDecisionUntilCommandExecution() {
+        Level level = new Level(5, 5, List.of(), new GridPoint2(0, 0));
+        Tank tank = level.spawnTank(new GridPoint2(2, 2), 0.4f);
+        List<Command> commands = new ArrayList<>();
+        TankControlStrategy controller = new RandomTankController(tank, new Random(7), commands::add);
+
+        controller.control();
+        assertFalse(tank.isMoving());
+        assertEquals(1, commands.size());
+        commands.get(0).execute();
+        assertTrue(tank.isMoving());
+    }
+
+    @Test
     public void choosesRepeatableDirectionOnlyWhenTankIsIdle() {
         Level level = new Level(5, 5, List.of(), new GridPoint2(0, 0));
         Tank tank = level.spawnTank(new GridPoint2(2, 2), 0.4f);
-        TankControlStrategy controller = new RandomTankController(tank, new Random(7));
+        TankControlStrategy controller = new RandomTankController(tank, new Random(7), Command::execute);
         Random expectedRandom = new Random(7);
         Direction first = Direction.values()[expectedRandom.nextInt(4)];
 
@@ -85,9 +102,9 @@ public class RandomTankControllerTest {
                 public int nextInt(int bound) {
                     return direction.ordinal();
                 }
-            });
+            }, Command::execute);
         }
         int[] keys = {Input.Keys.UP, Input.Keys.LEFT, Input.Keys.DOWN, Input.Keys.RIGHT};
-        return new TankController(new ButtonPressHandler(key -> key == keys[direction.ordinal()]), tank);
+        return new TankController(new ButtonPressHandler(key -> key == keys[direction.ordinal()], Command::execute), tank);
     }
 }
