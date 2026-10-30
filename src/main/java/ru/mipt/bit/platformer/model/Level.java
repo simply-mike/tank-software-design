@@ -14,6 +14,7 @@ public final class Level implements TileAvailability {
     private final int height;
     private final GridPoint2 playerPosition;
     private final List<LevelObject> objects = new ArrayList<>();
+    private final List<LevelListener> listeners = new ArrayList<>();
     private final CollisionHandler collisions;
 
     public Level(int width, int height, List<Tree> trees, GridPoint2 playerPosition) {
@@ -23,15 +24,15 @@ public final class Level implements TileAvailability {
         this.width = width;
         this.height = height;
         this.playerPosition = new GridPoint2(playerPosition);
-        objects.addAll(List.copyOf(trees));
         collisions = new CollisionHandler(width, height, Collections.unmodifiableList(objects));
-        if (!isFree(playerPosition)) {
-            throw new IllegalArgumentException("Player must start on a free tile");
-        }
-        for (Tree tree : trees) {
+        for (Tree tree : List.copyOf(trees)) {
             if (!collisions.isInside(tree.getCoordinates())) {
                 throw new IllegalArgumentException("Tree lies outside the level");
             }
+            add(tree);
+        }
+        if (!isFree(playerPosition)) {
+            throw new IllegalArgumentException("Player must start on a free tile");
         }
     }
 
@@ -92,13 +93,42 @@ public final class Level implements TileAvailability {
                 object.update(deltaTime);
             }
         }
-        objects.removeIf(LevelObject::isDestroyed);
+        for (LevelObject object : List.copyOf(objects)) {
+            if (object.isDestroyed()) {
+                remove(object);
+            }
+        }
     }
 
     public void add(LevelObject object) {
         Objects.requireNonNull(object);
         if (!object.isDestroyed() && !objects.contains(object)) {
             objects.add(object);
+            for (LevelListener listener : List.copyOf(listeners)) {
+                listener.objectAdded(object);
+            }
         }
+    }
+
+    public void remove(LevelObject object) {
+        if (objects.remove(object)) {
+            for (LevelListener listener : List.copyOf(listeners)) {
+                listener.objectRemoved(object);
+            }
+        }
+    }
+
+    public void subscribe(LevelListener listener) {
+        Objects.requireNonNull(listener);
+        if (!listeners.contains(listener)) {
+            listeners.add(listener);
+            for (LevelObject object : List.copyOf(objects)) {
+                listener.objectAdded(object);
+            }
+        }
+    }
+
+    public void unsubscribe(LevelListener listener) {
+        listeners.remove(listener);
     }
 }

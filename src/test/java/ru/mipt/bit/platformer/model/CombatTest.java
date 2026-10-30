@@ -108,6 +108,21 @@ public class CombatTest {
     }
 
     @Test
+    public void aNewObstacleTypeBlocksTanksAndBulletsThroughTheExistingContract() {
+        Level level = emptyLevel();
+        Obstacle rock = coordinates -> coordinates.equals(new GridPoint2(2, 0));
+        level.add(rock);
+        Tank shooter = level.spawnTank(new GridPoint2(0, 0), 0.4f);
+        shooter.shoot();
+
+        level.update(0.2f);
+
+        assertTrue(bullets(level).isEmpty());
+        assertFalse(level.isFree(new GridPoint2(2, 0)));
+        assertTrue(level.getObjects().contains(rock));
+    }
+
+    @Test
     public void keepsZeroHealthTankAndRemovesItOnlyAfterHealthBecomesNegative() {
         Level level = emptyLevel();
         Tank shooter = level.spawnTank(new GridPoint2(0, 0), 0.4f, 3, new BulletSettings(2, 0.1f));
