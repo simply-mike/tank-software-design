@@ -25,6 +25,7 @@ public class TankControllerTest {
         List<Command> commands = new ArrayList<>();
         ButtonPressHandler handler = new ButtonPressHandler(key -> key == Input.Keys.SPACE, commands::add);
         new TankController(handler, tank).control();
+        handler.handleInput();
         assertEquals(1, level.getObjects().size());
         assertEquals(1, commands.size());
 

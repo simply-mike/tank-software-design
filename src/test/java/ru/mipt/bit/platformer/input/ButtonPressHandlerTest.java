@@ -66,4 +66,26 @@ public class ButtonPressHandlerTest {
         assertEquals(1, movementCalls.get());
         assertEquals(1, firingCalls.get());
     }
+
+    @Test
+    public void pressBindingsRequireReleaseWhileHeldMovementKeepsRepeating() {
+        Set<Integer> pressed = new HashSet<>();
+        AtomicInteger moves = new AtomicInteger();
+        AtomicInteger shots = new AtomicInteger();
+        ButtonPressHandler handler = new ButtonPressHandler(pressed::contains, Command::execute);
+        handler.bind(moves::incrementAndGet, 1);
+        handler.bindOnPress(shots::incrementAndGet, 2);
+        pressed.addAll(List.of(1, 2));
+
+        handler.handleInput();
+        handler.handleInput();
+        assertEquals(2, moves.get());
+        assertEquals(1, shots.get());
+        pressed.remove(2);
+        handler.handleInput();
+        pressed.add(2);
+        handler.handleInput();
+        assertEquals(4, moves.get());
+        assertEquals(2, shots.get());
+    }
 }

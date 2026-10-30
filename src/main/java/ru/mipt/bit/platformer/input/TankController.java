@@ -25,7 +25,7 @@ public final class TankController implements TankControlStrategy {
         buttonPressHandler.bind(new MoveTankCommand(tank, Direction.LEFT), LEFT, A);
         buttonPressHandler.bind(new MoveTankCommand(tank, Direction.DOWN), DOWN, S);
         buttonPressHandler.bind(new MoveTankCommand(tank, Direction.RIGHT), RIGHT, D);
-        buttonPressHandler.bind(new ShootTankCommand(tank), SPACE);
+        buttonPressHandler.bindOnPress(new ShootTankCommand(tank), SPACE);
     }
 
     @Override
