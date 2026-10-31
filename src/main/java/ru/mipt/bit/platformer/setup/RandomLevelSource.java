@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.level;
+package ru.mipt.bit.platformer.setup;
 
 import ru.mipt.bit.platformer.model.Level;
 

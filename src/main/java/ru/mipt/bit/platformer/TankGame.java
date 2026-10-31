@@ -16,7 +16,7 @@ import ru.mipt.bit.platformer.input.TankControlStrategy;
 import ru.mipt.bit.platformer.input.TankController;
 import ru.mipt.bit.platformer.model.Level;
 import ru.mipt.bit.platformer.model.Bullet;
-import ru.mipt.bit.platformer.level.RandomTankSpawner;
+import ru.mipt.bit.platformer.setup.RandomTankSpawner;
 import ru.mipt.bit.platformer.model.Tank;
 import ru.mipt.bit.platformer.model.LevelObject;
 import ru.mipt.bit.platformer.model.Tree;

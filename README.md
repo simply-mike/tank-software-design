@@ -26,6 +26,7 @@ Bullets disappear on hitting trees, tanks, other bullets, or the field boundary.
 Both bullets disappear when they collide. A bullet cannot damage its shooter;
 other tanks can be hit in either cell they occupy during movement.
 
+The `setup` package loads or generates a level and places its initial tanks.
 The logical `model.Level` owns the objects and their lifecycle. `CollisionHandler`
 checks movement and resolves bullet contacts; tanks own health, and bullets own
 flight. `LevelGraphics` subscribes to object additions and removals, receiving
