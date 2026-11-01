@@ -67,7 +67,7 @@ public final class Level implements TileAvailability {
             throw new IllegalArgumentException("Tank must start on a free tile");
         }
         Tank tank = new Tank(coordinates, collisions, movementDuration,
-                health, bulletSettings, this::add, collisions::resolve);
+                health, bulletSettings, this::add);
         add(tank);
         return tank;
     }
@@ -77,22 +77,31 @@ public final class Level implements TileAvailability {
         return collisions.isFree(coordinates);
     }
 
-    public void update(float deltaTime) {
-        if (deltaTime < 0f || !Float.isFinite(deltaTime)) {
+    public void update(double deltaTime) {
+        if (deltaTime < 0d || !Double.isFinite(deltaTime)) {
             throw new IllegalArgumentException("Tick duration must be non-negative and finite");
         }
         List<LevelObject> tickObjects = List.copyOf(objects);
-        // Resolve spawn contacts before tanks can leave their starting cells.
-        for (LevelObject object : tickObjects) {
-            if (object instanceof Bullet) {
-                collisions.resolve((Bullet) object);
+        collisions.resolve();
+        do {
+            double step = deltaTime;
+            for (LevelObject object : tickObjects) {
+                if (!object.isDestroyed() && objects.contains(object)) {
+                    step = Math.min(step, object.timeToNextTransition());
+                }
             }
-        }
-        for (LevelObject object : tickObjects) {
-            if (!object.isDestroyed() && objects.contains(object)) {
-                object.update(deltaTime);
+            if (step < 0d || Double.isNaN(step) || (step == 0d && deltaTime > 0d)) {
+                throw new IllegalStateException("Transition time must be positive");
             }
-        }
+            // All objects reach the same time before contacts are resolved.
+            for (LevelObject object : tickObjects) {
+                if (!object.isDestroyed() && objects.contains(object)) {
+                    object.update(step);
+                }
+            }
+            collisions.resolve();
+            deltaTime -= step;
+        } while (deltaTime > 0d);
         for (LevelObject object : List.copyOf(objects)) {
             if (object.isDestroyed()) {
                 remove(object);

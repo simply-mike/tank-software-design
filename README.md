@@ -35,5 +35,8 @@ are disposed when the game closes.
 
 Each frame collects commands, executes them, updates the logical level, then
 renders. Random AI decisions use the same move/shoot commands as keyboard input.
+The level advances all objects to each next cell transition before resolving
+contacts. Bullet contacts include opposite projectiles swapping cells in the
+same step; a long frame does not let one projectile catch a frozen peer.
 
 Verify the complete project with `./gradlew test build` and `./gradlew run`.

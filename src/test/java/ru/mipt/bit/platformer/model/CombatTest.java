@@ -252,11 +252,11 @@ public class CombatTest {
         AtomicInteger updates = new AtomicInteger();
         LevelObject child = new LevelObject() {
             @Override public boolean occupies(GridPoint2 position) { return false; }
-            @Override public void update(float deltaTime) { updates.incrementAndGet(); }
+            @Override public void update(double deltaTime) { updates.incrementAndGet(); }
         };
         level.add(new LevelObject() {
             @Override public boolean occupies(GridPoint2 position) { return false; }
-            @Override public void update(float deltaTime) { level.add(child); }
+            @Override public void update(double deltaTime) { level.add(child); }
         });
 
         level.update(0f);

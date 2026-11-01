@@ -13,15 +13,13 @@ public final class Tank implements Obstacle {
     private final float movementDuration;
     private final BulletSettings bulletSettings;
     private final Consumer<Bullet> registerBullet;
-    private final Consumer<Bullet> checkCollision;
     private int health;
 
-    private float movementProgress = 1f;
+    private double movementRemaining;
     private Direction direction = Direction.RIGHT;
 
     Tank(GridPoint2 initialCoordinates, TileAvailability tiles, float movementDuration,
-         int health, BulletSettings bulletSettings, Consumer<Bullet> registerBullet,
-         Consumer<Bullet> checkCollision) {
+         int health, BulletSettings bulletSettings, Consumer<Bullet> registerBullet) {
         if (movementDuration <= 0f || !Float.isFinite(movementDuration)) {
             throw new IllegalArgumentException("Movement duration must be positive and finite");
         }
@@ -35,7 +33,6 @@ public final class Tank implements Obstacle {
         this.health = health;
         this.bulletSettings = Objects.requireNonNull(bulletSettings);
         this.registerBullet = Objects.requireNonNull(registerBullet);
-        this.checkCollision = Objects.requireNonNull(checkCollision);
     }
 
     public void move(Direction newDirection) {
@@ -47,18 +44,20 @@ public final class Tank implements Obstacle {
         GridPoint2 destination = newDirection.calculateDestinationFrom(coordinates);
         if (tiles.isFree(destination)) {
             destinationCoordinates.set(destination);
-            movementProgress = 0f;
+            movementRemaining = movementDuration;
         }
     }
 
     @Override
-    public void update(float deltaTime) {
+    public void update(double deltaTime) {
+        if (deltaTime < 0d || !Double.isFinite(deltaTime)) {
+            throw new IllegalArgumentException("Tick duration must be non-negative and finite");
+        }
         if (isDestroyed()) {
             return;
         }
-        movementProgress = Math.max(0f,
-                Math.min(movementProgress + deltaTime / movementDuration, 1f));
-        if (movementProgress == 1f) {
+        movementRemaining = Math.max(0d, movementRemaining - deltaTime);
+        if (!isMoving()) {
             coordinates.set(destinationCoordinates);
         }
     }
@@ -72,7 +71,7 @@ public final class Tank implements Obstacle {
     }
 
     public float getMovementProgress() {
-        return movementProgress;
+        return (float) (1d - movementRemaining / movementDuration);
     }
 
     public Direction getDirection() {
@@ -80,13 +79,18 @@ public final class Tank implements Obstacle {
     }
 
     public boolean isMoving() {
-        return movementProgress < 1f;
+        return movementRemaining > 0d;
+    }
+
+    @Override
+    public double timeToNextTransition() {
+        return isMoving() ? movementRemaining : Double.POSITIVE_INFINITY;
     }
 
     public void shoot() {
         if (!isDestroyed()) {
             registerBullet.accept(new Bullet(direction.calculateDestinationFrom(coordinates),
-                    direction, bulletSettings, this, checkCollision));
+                    direction, bulletSettings, this));
         }
     }
 

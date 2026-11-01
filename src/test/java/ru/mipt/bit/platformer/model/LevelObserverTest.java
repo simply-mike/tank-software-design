@@ -112,11 +112,11 @@ public class LevelObserverTest {
         AtomicInteger updates = new AtomicInteger();
         LevelObject child = new LevelObject() {
             @Override public boolean occupies(GridPoint2 coordinates) { return false; }
-            @Override public void update(float deltaTime) { updates.incrementAndGet(); }
+            @Override public void update(double deltaTime) { updates.incrementAndGet(); }
         };
         level.add(new LevelObject() {
             @Override public boolean occupies(GridPoint2 coordinates) { return false; }
-            @Override public void update(float deltaTime) { level.remove(child); }
+            @Override public void update(double deltaTime) { level.remove(child); }
         });
         level.add(child);
 

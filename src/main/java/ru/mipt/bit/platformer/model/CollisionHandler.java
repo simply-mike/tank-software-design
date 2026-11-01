@@ -3,6 +3,7 @@ package ru.mipt.bit.platformer.model;
 import com.badlogic.gdx.math.GridPoint2;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 final class CollisionHandler implements TileAvailability {
 
@@ -34,18 +35,29 @@ final class CollisionHandler implements TileAvailability {
                 && coordinates.y >= 0 && coordinates.y < height;
     }
 
-    void resolve(Bullet bullet) {
-        if (bullet.isDestroyed()) {
-            return;
+    void resolve() {
+        List<LevelObject> activeObjects = objects.stream().filter(object -> !object.isDestroyed())
+                .collect(Collectors.toList());
+        for (LevelObject object : activeObjects) {
+            if (object instanceof Bullet) {
+                resolve((Bullet) object, activeObjects);
+            }
         }
+    }
+
+    private void resolve(Bullet bullet, List<LevelObject> activeObjects) {
         GridPoint2 position = bullet.getCoordinates();
         if (!isInside(position)) {
             bullet.destroy();
             return;
         }
-        for (LevelObject object : objects) {
-            if (object == bullet || bullet.wasFiredBy(object) || object.isDestroyed()
-                    || !object.occupies(position)) {
+        for (LevelObject object : activeObjects) {
+            if (object == bullet || bullet.wasFiredBy(object)) {
+                continue;
+            }
+            boolean contact = object.occupies(position)
+                    || (object instanceof Bullet && bullet.crossed((Bullet) object));
+            if (!contact) {
                 continue;
             }
             if (object instanceof Tank) {
@@ -56,7 +68,6 @@ final class CollisionHandler implements TileAvailability {
             }
             if (object instanceof Obstacle || object instanceof Bullet) {
                 bullet.destroy();
-                return;
             }
         }
     }

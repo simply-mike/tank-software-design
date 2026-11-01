@@ -3,42 +3,47 @@ package ru.mipt.bit.platformer.model;
 import com.badlogic.gdx.math.GridPoint2;
 
 import java.util.Objects;
-import java.util.function.Consumer;
 
 public final class Bullet implements LevelObject {
 
     private final GridPoint2 coordinates;
+    private final GridPoint2 previousCoordinates;
     private final Direction direction;
     private final BulletSettings settings;
     private final Tank shooter;
-    private final Consumer<Bullet> checkCollision;
-    private double movementProgress;
+    private double movementRemaining;
     private boolean destroyed;
 
     Bullet(GridPoint2 coordinates, Direction direction, BulletSettings settings,
-           Tank shooter, Consumer<Bullet> checkCollision) {
+           Tank shooter) {
         this.coordinates = new GridPoint2(coordinates);
+        previousCoordinates = new GridPoint2(coordinates);
         this.direction = Objects.requireNonNull(direction);
         this.settings = Objects.requireNonNull(settings);
         this.shooter = Objects.requireNonNull(shooter);
-        this.checkCollision = Objects.requireNonNull(checkCollision);
+        movementRemaining = settings.getMovementDuration();
     }
 
     @Override
-    public void update(float deltaTime) {
-        if (deltaTime < 0f || !Float.isFinite(deltaTime)) {
+    public void update(double deltaTime) {
+        if (deltaTime < 0d || !Double.isFinite(deltaTime)) {
             throw new IllegalArgumentException("Tick duration must be non-negative and finite");
         }
         if (destroyed) {
             return;
         }
-        checkCollision.accept(this);
-        movementProgress += (double) deltaTime / settings.getMovementDuration();
-        while (!destroyed && movementProgress >= 1d) {
+        previousCoordinates.set(coordinates);
+        while (deltaTime >= movementRemaining) {
+            deltaTime -= movementRemaining;
             coordinates.set(direction.calculateDestinationFrom(coordinates));
-            movementProgress -= 1d;
-            checkCollision.accept(this);
+            movementRemaining = settings.getMovementDuration();
         }
+        movementRemaining -= deltaTime;
+    }
+
+    @Override
+    public double timeToNextTransition() {
+        return movementRemaining;
     }
 
     @Override
@@ -55,7 +60,7 @@ public final class Bullet implements LevelObject {
     }
 
     public float getMovementProgress() {
-        return (float) movementProgress;
+        return (float) (1d - movementRemaining / settings.getMovementDuration());
     }
 
     public Direction getDirection() {
@@ -68,6 +73,11 @@ public final class Bullet implements LevelObject {
 
     boolean wasFiredBy(LevelObject object) {
         return shooter == object;
+    }
+
+    boolean crossed(Bullet other) {
+        return previousCoordinates.equals(other.coordinates)
+                && coordinates.equals(other.previousCoordinates);
     }
 
     void destroy() {

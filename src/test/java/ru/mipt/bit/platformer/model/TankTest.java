@@ -143,9 +143,8 @@ public class TankTest {
     }
 
     private Tank createTank(GridPoint2 coordinates, TileAvailability tiles, float duration) {
-        CollisionHandler collisions = new CollisionHandler(10, 8, emptyLevel.getObjects());
         return new Tank(coordinates, tiles, duration, 3, new BulletSettings(1, 0.1f),
-                emptyLevel::add, collisions::resolve);
+                emptyLevel::add);
     }
 
 }

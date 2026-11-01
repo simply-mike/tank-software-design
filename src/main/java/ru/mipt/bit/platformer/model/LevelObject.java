@@ -6,7 +6,11 @@ public interface LevelObject {
 
     boolean occupies(GridPoint2 coordinates);
 
-    default void update(float deltaTime) {
+    default void update(double deltaTime) {
+    }
+
+    default double timeToNextTransition() {
+        return Double.POSITIVE_INFINITY;
     }
 
     default boolean isDestroyed() {
