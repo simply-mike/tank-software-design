@@ -109,7 +109,7 @@ public final class Level implements TileAvailability {
         }
     }
 
-    public void add(LevelObject object) {
+    void add(LevelObject object) {
         Objects.requireNonNull(object);
         if (!object.isDestroyed() && !objects.contains(object)) {
             objects.add(object);
@@ -121,6 +121,7 @@ public final class Level implements TileAvailability {
 
     public void remove(LevelObject object) {
         if (objects.remove(object)) {
+            object.onRemoved();
             for (LevelListener listener : List.copyOf(listeners)) {
                 listener.objectRemoved(object);
             }

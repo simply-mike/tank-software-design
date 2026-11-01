@@ -14,6 +14,7 @@ public final class Tank implements Obstacle {
     private final BulletSettings bulletSettings;
     private final Consumer<Bullet> registerBullet;
     private int health;
+    private boolean removed;
 
     private double movementRemaining;
     private Direction direction = Direction.RIGHT;
@@ -109,7 +110,12 @@ public final class Tank implements Obstacle {
 
     @Override
     public boolean isDestroyed() {
-        return health < 0;
+        return removed || health < 0;
+    }
+
+    @Override
+    public void onRemoved() {
+        removed = true;
     }
 
     @Override

@@ -85,6 +85,11 @@ public final class Bullet implements LevelObject {
     }
 
     @Override
+    public void onRemoved() {
+        destroy();
+    }
+
+    @Override
     public boolean isDestroyed() {
         return destroyed;
     }

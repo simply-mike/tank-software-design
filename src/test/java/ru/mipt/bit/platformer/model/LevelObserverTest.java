@@ -41,6 +41,7 @@ public class LevelObserverTest {
             }
             @Override public void objectRemoved(LevelObject object) {
                 assertFalse(level.getObjects().contains(object));
+                assertTrue(object.isDestroyed());
                 removals.incrementAndGet();
             }
         });

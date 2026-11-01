@@ -13,6 +13,9 @@ public interface LevelObject {
         return Double.POSITIVE_INFINITY;
     }
 
+    default void onRemoved() {
+    }
+
     default boolean isDestroyed() {
         return false;
     }

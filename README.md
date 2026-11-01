@@ -29,7 +29,9 @@ other tanks can be hit in either cell they occupy during movement.
 The `setup` package loads or generates a level and places its initial tanks.
 The logical `model.Level` owns the objects and their lifecycle. `CollisionHandler`
 checks movement and resolves bullet contacts; tanks own health, and bullets own
-flight. `LevelGraphics` subscribes to object additions and removals, receiving
+flight. General registration is internal to the model; clients create tanks
+through `Level.spawnTank`. Removing a tank or bullet ends its activity, so queued
+commands cannot act on a removed tank. `LevelGraphics` subscribes to object additions and removals, receiving
 initial objects through the same notifications. Renderers share textures, which
 are disposed when the game closes.
 
