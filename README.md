@@ -32,8 +32,9 @@ checks movement and resolves bullet contacts; tanks own health, and bullets own
 flight. General registration is internal to the model; clients create tanks
 through `Level.spawnTank`. Removing a tank or bullet ends its activity, so queued
 commands cannot act on a removed tank. `LevelGraphics` subscribes to object additions and removals, receiving
-initial objects through the same notifications. Renderers share textures, which
-are disposed when the game closes.
+initial objects through the same notifications. `graphics.ObjectViewFactory`
+selects views and owns the shared tank, tree, and bullet renderers. Their textures
+are disposed when the game closes; the game loop does not dispatch on entity types.
 
 Each frame collects commands, executes them, updates the logical level, then
 renders. Random AI decisions use the same move/shoot commands as keyboard input.

@@ -7,19 +7,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import ru.mipt.bit.platformer.command.Command;
 import ru.mipt.bit.platformer.graphics.FieldGraphics;
 import ru.mipt.bit.platformer.graphics.LevelGraphics;
-import ru.mipt.bit.platformer.graphics.BulletGraphics;
-import ru.mipt.bit.platformer.graphics.TankGraphics;
-import ru.mipt.bit.platformer.graphics.TreeGraphics;
+import ru.mipt.bit.platformer.graphics.ObjectViewFactory;
 import ru.mipt.bit.platformer.input.ButtonPressHandler;
 import ru.mipt.bit.platformer.input.RandomTankController;
 import ru.mipt.bit.platformer.input.TankControlStrategy;
 import ru.mipt.bit.platformer.input.TankController;
 import ru.mipt.bit.platformer.model.Level;
-import ru.mipt.bit.platformer.model.Bullet;
 import ru.mipt.bit.platformer.setup.RandomTankSpawner;
 import ru.mipt.bit.platformer.model.Tank;
-import ru.mipt.bit.platformer.model.LevelObject;
-import ru.mipt.bit.platformer.model.Tree;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +33,7 @@ final class TankGame extends ApplicationAdapter {
     private final List<Command> commands = new ArrayList<>();
     private Batch batch;
     private FieldGraphics fieldGraphics;
-    private TankGraphics tankGraphics;
-    private TreeGraphics treeGraphics;
-    private BulletGraphics bulletGraphics;
+    private ObjectViewFactory viewFactory;
     private LevelGraphics levelGraphics;
 
     TankGame(Level level, int aiTankCount, float tankMovementDuration) {
@@ -62,10 +55,8 @@ final class TankGame extends ApplicationAdapter {
         }
 
         fieldGraphics = new FieldGraphics("level.tmx", batch, level.getWidth(), level.getHeight());
-        tankGraphics = new TankGraphics("images/tank_blue.png");
-        treeGraphics = new TreeGraphics("images/greenTree.png");
-        bulletGraphics = new BulletGraphics();
-        levelGraphics = new LevelGraphics(this::createView);
+        viewFactory = new ObjectViewFactory(batch, fieldGraphics);
+        levelGraphics = new LevelGraphics(viewFactory);
         level.subscribe(levelGraphics);
     }
 
@@ -100,22 +91,8 @@ final class TankGame extends ApplicationAdapter {
     public void dispose() {
         level.unsubscribe(levelGraphics);
         fieldGraphics.dispose();
-        tankGraphics.dispose();
-        treeGraphics.dispose();
-        bulletGraphics.dispose();
+        viewFactory.dispose();
         batch.dispose();
     }
 
-    private Runnable createView(LevelObject object) {
-        if (object instanceof Tank) {
-            return () -> tankGraphics.draw(batch, (Tank) object, fieldGraphics);
-        }
-        if (object instanceof Tree) {
-            return () -> treeGraphics.draw(batch, (Tree) object, fieldGraphics);
-        }
-        if (object instanceof Bullet) {
-            return () -> bulletGraphics.draw(batch, (Bullet) object, fieldGraphics);
-        }
-        throw new IllegalArgumentException("No graphics for " + object.getClass().getName());
-    }
 }
