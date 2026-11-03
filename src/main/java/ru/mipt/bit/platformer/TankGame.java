@@ -4,58 +4,60 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import ru.mipt.bit.platformer.command.Command;
 import ru.mipt.bit.platformer.graphics.FieldGraphics;
-import ru.mipt.bit.platformer.graphics.TankGraphics;
-import ru.mipt.bit.platformer.graphics.TreeGraphics;
+import ru.mipt.bit.platformer.graphics.LevelGraphics;
+import ru.mipt.bit.platformer.graphics.ObjectViewFactory;
 import ru.mipt.bit.platformer.input.ButtonPressHandler;
 import ru.mipt.bit.platformer.input.RandomTankController;
 import ru.mipt.bit.platformer.input.TankControlStrategy;
 import ru.mipt.bit.platformer.input.TankController;
-import ru.mipt.bit.platformer.level.Level;
-import ru.mipt.bit.platformer.level.RandomTankSpawner;
+import ru.mipt.bit.platformer.model.Level;
+import ru.mipt.bit.platformer.setup.RandomTankSpawner;
 import ru.mipt.bit.platformer.model.Tank;
-import ru.mipt.bit.platformer.model.Tree;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.Random;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
 final class TankGame extends ApplicationAdapter {
 
-    private static final float TANK_MOVEMENT_DURATION = 0.4f;
-    private static final int AI_TANK_COUNT = 5;
-
     private final Level level;
-    private final List<Tank> tanks = new ArrayList<>();
-    private final List<TankControlStrategy> controllers = new ArrayList<>();
+    private final int aiTankCount;
+    private final float tankMovementDuration;
+    private final Map<Tank, TankControlStrategy> controllers = new LinkedHashMap<>();
+    private final List<Command> commands = new ArrayList<>();
     private Batch batch;
     private FieldGraphics fieldGraphics;
-    private TankGraphics tankGraphics;
-    private TreeGraphics treeGraphics;
+    private ObjectViewFactory viewFactory;
+    private LevelGraphics levelGraphics;
 
-    TankGame(Level level) {
+    TankGame(Level level, int aiTankCount, float tankMovementDuration) {
         this.level = level;
+        this.aiTankCount = aiTankCount;
+        this.tankMovementDuration = tankMovementDuration;
     }
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        Tank player = level.spawnTank(level.getPlayerPosition(), TANK_MOVEMENT_DURATION);
-        tanks.add(player);
-        ButtonPressHandler keyboard = new ButtonPressHandler(Gdx.input::isKeyPressed);
-        controllers.add(new TankController(keyboard, player));
+        Tank player = level.spawnTank(level.getPlayerPosition(), tankMovementDuration);
+        ButtonPressHandler keyboard = new ButtonPressHandler(Gdx.input::isKeyPressed, commands::add);
+        controllers.put(player, new TankController(keyboard, player));
 
         Random random = new Random();
-        for (Tank tank : new RandomTankSpawner(random).spawn(level, AI_TANK_COUNT, TANK_MOVEMENT_DURATION)) {
-            tanks.add(tank);
-            controllers.add(new RandomTankController(tank, random));
+        for (Tank tank : new RandomTankSpawner(random).spawn(level, aiTankCount, tankMovementDuration)) {
+            controllers.put(tank, new RandomTankController(tank, random, commands::add));
         }
 
         fieldGraphics = new FieldGraphics("level.tmx", batch, level.getWidth(), level.getHeight());
-        tankGraphics = new TankGraphics("images/tank_blue.png");
-        treeGraphics = new TreeGraphics("images/greenTree.png");
+        viewFactory = new ObjectViewFactory(batch, fieldGraphics);
+        levelGraphics = new LevelGraphics(viewFactory);
+        level.subscribe(levelGraphics);
     }
 
     @Override
@@ -63,22 +65,20 @@ final class TankGame extends ApplicationAdapter {
         Gdx.gl.glClearColor(0f, 0f, 0.2f, 1f);
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 
-        for (TankControlStrategy controller : controllers) {
+        commands.clear();
+        for (TankControlStrategy controller : controllers.values()) {
             controller.control();
         }
-        float deltaTime = Gdx.graphics.getDeltaTime();
-        for (Tank tank : tanks) {
-            tank.update(deltaTime);
+        for (Command command : commands) {
+            command.execute();
         }
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        level.update(deltaTime);
+        controllers.keySet().removeIf(Tank::isDestroyed);
         fieldGraphics.render();
 
         batch.begin();
-        for (Tank tank : tanks) {
-            tankGraphics.draw(batch, tank, fieldGraphics);
-        }
-        for (Tree tree : level.getTrees()) {
-            treeGraphics.draw(batch, tree, fieldGraphics);
-        }
+        levelGraphics.render();
         batch.end();
     }
 
@@ -89,9 +89,10 @@ final class TankGame extends ApplicationAdapter {
 
     @Override
     public void dispose() {
+        level.unsubscribe(levelGraphics);
         fieldGraphics.dispose();
-        tankGraphics.dispose();
-        treeGraphics.dispose();
+        viewFactory.dispose();
         batch.dispose();
     }
+
 }

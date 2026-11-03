@@ -3,7 +3,7 @@ package ru.mipt.bit.platformer.command;
 import com.badlogic.gdx.math.GridPoint2;
 import org.junit.Test;
 import ru.mipt.bit.platformer.model.Direction;
-import ru.mipt.bit.platformer.model.Field;
+import ru.mipt.bit.platformer.model.Level;
 import ru.mipt.bit.platformer.model.Tank;
 
 import java.util.List;
@@ -16,9 +16,9 @@ public class MoveTankCommandTest {
 
     @Test
     public void defersMoveAndPreservesReceiverAndDirection() {
-        Field field = new Field(4, 4, List.of());
-        Tank receiver = field.spawnTank(new GridPoint2(1, 1), 0.4f);
-        Tank other = field.spawnTank(new GridPoint2(3, 3), 0.4f);
+        Level level = new Level(4, 4, List.of(), new GridPoint2(0, 0));
+        Tank receiver = level.spawnTank(new GridPoint2(1, 1), 0.4f);
+        Tank other = level.spawnTank(new GridPoint2(3, 3), 0.4f);
         Command command = new MoveTankCommand(receiver, Direction.UP);
 
         assertFalse(receiver.isMoving());
