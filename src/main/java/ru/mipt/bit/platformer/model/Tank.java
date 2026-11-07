@@ -13,6 +13,7 @@ public final class Tank implements Obstacle {
     private final float movementDuration;
     private final BulletSettings bulletSettings;
     private final Consumer<Bullet> registerBullet;
+    private final int maxHealth;
     private int health;
     private boolean removed;
 
@@ -31,6 +32,7 @@ public final class Tank implements Obstacle {
         destinationCoordinates = new GridPoint2(initialCoordinates);
         this.tiles = Objects.requireNonNull(tiles);
         this.movementDuration = movementDuration;
+        this.maxHealth = health;
         this.health = health;
         this.bulletSettings = Objects.requireNonNull(bulletSettings);
         this.registerBullet = Objects.requireNonNull(registerBullet);
@@ -106,6 +108,10 @@ public final class Tank implements Obstacle {
 
     public int getHealth() {
         return health;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
     }
 
     @Override

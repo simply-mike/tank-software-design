@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import ru.mipt.bit.platformer.command.Command;
 import ru.mipt.bit.platformer.graphics.FieldGraphics;
+import ru.mipt.bit.platformer.graphics.HealthBarVisibility;
 import ru.mipt.bit.platformer.graphics.LevelGraphics;
 import ru.mipt.bit.platformer.graphics.ObjectViewFactory;
 import ru.mipt.bit.platformer.input.ButtonPressHandler;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.Random;
 
+import static com.badlogic.gdx.Input.Keys.L;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
 final class TankGame extends ApplicationAdapter {
@@ -32,6 +34,7 @@ final class TankGame extends ApplicationAdapter {
     private final Map<Tank, TankControlStrategy> controllers = new LinkedHashMap<>();
     private final List<Command> commands = new ArrayList<>();
     private Batch batch;
+    private ButtonPressHandler viewKeyboard;
     private FieldGraphics fieldGraphics;
     private ObjectViewFactory viewFactory;
     private LevelGraphics levelGraphics;
@@ -48,6 +51,9 @@ final class TankGame extends ApplicationAdapter {
         Tank player = level.spawnTank(level.getPlayerPosition(), tankMovementDuration);
         ButtonPressHandler keyboard = new ButtonPressHandler(Gdx.input::isKeyPressed, commands::add);
         controllers.put(player, new TankController(keyboard, player));
+        HealthBarVisibility healthBars = new HealthBarVisibility();
+        viewKeyboard = new ButtonPressHandler(Gdx.input::isKeyJustPressed, commands::add);
+        viewKeyboard.bind(healthBars::toggle, L);
 
         Random random = new Random();
         for (Tank tank : new RandomTankSpawner(random).spawn(level, aiTankCount, tankMovementDuration)) {
@@ -55,7 +61,7 @@ final class TankGame extends ApplicationAdapter {
         }
 
         fieldGraphics = new FieldGraphics("level.tmx", batch, level.getWidth(), level.getHeight());
-        viewFactory = new ObjectViewFactory(batch, fieldGraphics);
+        viewFactory = new ObjectViewFactory(batch, fieldGraphics, healthBars::isVisible);
         levelGraphics = new LevelGraphics(viewFactory);
         level.subscribe(levelGraphics);
     }
@@ -66,6 +72,7 @@ final class TankGame extends ApplicationAdapter {
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 
         commands.clear();
+        viewKeyboard.handleInput();
         for (TankControlStrategy controller : controllers.values()) {
             controller.control();
         }

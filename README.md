@@ -15,6 +15,7 @@ empty cell. Each line is one row. All rows must have the same length. Use one
 Move with the arrow keys or WASD. Press Space to shoot once; release it before
 the next shot. AI tanks randomly choose between four movement directions and
 shooting.
+Press L to show or hide health bars for all tanks. Bars start hidden.
 
 Set the AI tank count and movement duration in `src/main/resources/game.properties`.
 
