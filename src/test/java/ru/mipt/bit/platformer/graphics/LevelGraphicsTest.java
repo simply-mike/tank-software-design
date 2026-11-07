@@ -49,14 +49,21 @@ public class LevelGraphicsTest {
     }
 
     @Test
-    public void bulletDestroyedAtSpawnIsNeverRenderedAndItsTankTargetDisappears() {
+    public void fourthStandardHitRemovesTankViewAndAdjacentHitsLeaveNoBulletViews() {
         Level level = new Level(2, 1, List.of(), new GridPoint2(0, 0));
         Tank shooter = level.spawnTank(new GridPoint2(0, 0), 0.4f);
         Tank target = level.spawnTank(new GridPoint2(1, 0), 0.4f);
-        target.takeDamage(3);
         List<LevelObject> drawn = new ArrayList<>();
         LevelGraphics graphics = new LevelGraphics(object -> () -> drawn.add(object));
         level.subscribe(graphics);
+
+        for (int hit = 0; hit < 3; hit++) {
+            shooter.shoot();
+            level.update(0f);
+        }
+        graphics.render();
+        assertEquals(List.of(shooter, target), drawn);
+        drawn.clear();
 
         shooter.shoot();
         level.update(0f);

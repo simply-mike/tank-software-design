@@ -41,8 +41,8 @@ public class SimulationTimeTest {
         level.update(0.1f);
 
         assertTrue(bulletPositions(level).isEmpty());
-        assertEquals(3, first.getHealth());
-        assertEquals(3, second.getHealth());
+        assertEquals(100, first.getHealth());
+        assertEquals(100, second.getHealth());
     }
 
     @Test
@@ -79,7 +79,7 @@ public class SimulationTimeTest {
 
         level.update(0.1f);
 
-        assertEquals(3, target.getHealth());
+        assertEquals(100, target.getHealth());
         assertEquals(List.of(new GridPoint2(2, 0)), bulletPositions(level));
     }
 

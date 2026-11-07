@@ -30,10 +30,12 @@ public class RandomTankSpawnerTest {
         List<Tank> tanks = new RandomTankSpawner(new Random(7)).spawn(level, 5, 0.8f);
 
         assertEquals(5, tanks.size());
+        assertEquals(100, player.getHealth());
         assertEquals(level.getPlayerPosition(), player.getCoordinates());
         Set<GridPoint2> positions = new HashSet<>();
         positions.add(player.getCoordinates());
         for (Tank tank : tanks) {
+            assertEquals(100, tank.getHealth());
             GridPoint2 position = tank.getCoordinates();
             assertTrue(positions.add(position));
             assertTrue(position.x >= 0 && position.x < level.getWidth());

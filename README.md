@@ -20,8 +20,9 @@ Set the AI tank count and movement duration in `src/main/resources/game.properti
 
 Run tests with `./gradlew test`.
 
-Default tanks have 3 HP; a bullet deals 1 damage and travels one cell in 0.1
-seconds. A tank at 0 HP stays alive and is removed when HP becomes negative.
+Default tanks have 100 HP. A standard bullet deals 30 HP of damage and travels
+one cell in 0.1 seconds. Four standard hits destroy a full-health tank.
+A tank at 0 HP stays alive and is removed when HP becomes negative.
 Bullets disappear on hitting trees, tanks, other bullets, or the field boundary.
 Both bullets disappear when they collide. A bullet cannot damage its shooter;
 other tanks can be hit in either cell they occupy during movement.

@@ -40,7 +40,7 @@ public class LevelMembershipTest {
         level.add(tank);
 
         assertTrue(tank.isDestroyed());
-        assertEquals(3, tank.getHealth());
+        assertEquals(100, tank.getHealth());
         assertEquals(new GridPoint2(0, 0), tank.getDestinationCoordinates());
         assertTrue(level.getObjects().isEmpty());
     }

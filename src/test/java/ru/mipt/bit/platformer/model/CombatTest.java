@@ -61,7 +61,7 @@ public class CombatTest {
         shooter.shoot();
         level.update(0f);
 
-        assertEquals(1, target.getHealth());
+        assertEquals(98, target.getHealth());
         assertTrue(bullets(level).isEmpty());
     }
 
@@ -75,7 +75,7 @@ public class CombatTest {
 
         level.update(0.4f);
 
-        assertEquals(2, target.getHealth());
+        assertEquals(70, target.getHealth());
         assertTrue(bullets(level).isEmpty());
     }
 
@@ -88,7 +88,7 @@ public class CombatTest {
 
         level.update(1f);
 
-        assertEquals(2, target.getHealth());
+        assertEquals(70, target.getHealth());
         assertTrue(bullets(level).isEmpty());
     }
 
@@ -156,8 +156,8 @@ public class CombatTest {
         level.update(0f);
 
         assertTrue(bullets(level).isEmpty());
-        assertEquals(3, first.getHealth());
-        assertEquals(3, second.getHealth());
+        assertEquals(100, first.getHealth());
+        assertEquals(100, second.getHealth());
     }
 
     @Test
@@ -173,8 +173,8 @@ public class CombatTest {
         level.update(0.2f);
 
         assertTrue(bullets(level).isEmpty());
-        assertEquals(3, first.getHealth());
-        assertEquals(3, second.getHealth());
+        assertEquals(100, first.getHealth());
+        assertEquals(100, second.getHealth());
     }
 
     @Test
@@ -188,7 +188,7 @@ public class CombatTest {
 
             level.update(0.1f);
 
-            assertEquals(2, target.getHealth());
+            assertEquals(70, target.getHealth());
             assertTrue(bullets(level).isEmpty());
         }
     }
@@ -200,7 +200,7 @@ public class CombatTest {
         shooter.move(Direction.RIGHT);
         shooter.shoot();
         level.update(0f);
-        assertEquals(3, shooter.getHealth());
+        assertEquals(100, shooter.getHealth());
         assertEquals(1, bullets(level).size());
 
         Level otherLevel = emptyLevel();
@@ -219,7 +219,7 @@ public class CombatTest {
             shooter.shoot();
             level.update(0f);
             assertTrue(bullets(level).isEmpty());
-            assertEquals(3, shooter.getHealth());
+            assertEquals(100, shooter.getHealth());
         }
         Level level = emptyLevel();
         level.spawnTank(new GridPoint2(0, 0), 0.4f).shoot();

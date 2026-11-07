@@ -81,7 +81,7 @@ public class RandomTankControllerTest {
         assertTrue(level.getObjects().stream().anyMatch(Bullet.class::isInstance));
         assertFalse(tank.isMoving());
 
-        tank.takeDamage(4);
+        tank.takeDamage(tank.getHealth() + 1);
         controller.control();
         assertEquals(1, commands.size());
     }
