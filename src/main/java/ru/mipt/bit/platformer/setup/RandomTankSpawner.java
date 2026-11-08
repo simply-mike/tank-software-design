@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Function;
 
 public final class RandomTankSpawner {
 
@@ -19,6 +20,10 @@ public final class RandomTankSpawner {
     }
 
     public List<Tank> spawn(Level level, int count, float movementDuration) {
+        return spawn(level, count, tile -> level.spawnTank(tile, movementDuration));
+    }
+
+    public List<Tank> spawn(Level level, int count, Function<GridPoint2, Tank> spawnTank) {
         if (count < 0) {
             throw new IllegalArgumentException("Tank count must not be negative");
         }
@@ -34,7 +39,7 @@ public final class RandomTankSpawner {
         Collections.shuffle(freeTiles, random);
         List<Tank> tanks = new ArrayList<>();
         for (int i = 0; i < Math.min(count, freeTiles.size()); i++) {
-            tanks.add(level.spawnTank(freeTiles.get(i), movementDuration));
+            tanks.add(spawnTank.apply(freeTiles.get(i)));
         }
         return tanks;
     }

@@ -3,6 +3,7 @@ package ru.mipt.bit.platformer;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import ru.mipt.bit.platformer.model.BulletSettings;
 import ru.mipt.bit.platformer.setup.FileLevelSource;
 import ru.mipt.bit.platformer.model.Level;
 import ru.mipt.bit.platformer.setup.LevelSource;
@@ -30,7 +31,8 @@ public final class GameDesktopLauncher {
                         : Path.of(args[0]).toUri().toURL());
         Level level = source.load();
         Properties gameConfig = loadGameConfig();
-        TankGame game = new TankGame(level, readAiTankCount(gameConfig), readTankMovementDuration(gameConfig));
+        TankGame game = new TankGame(level, readAiTankCount(gameConfig), readTankMovementDuration(gameConfig),
+                readTankInitialHealth(gameConfig), readBulletSettings(gameConfig));
 
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         Graphics.DisplayMode display = Lwjgl3ApplicationConfiguration.getDisplayMode();
@@ -60,9 +62,30 @@ public final class GameDesktopLauncher {
     }
 
     static float readTankMovementDuration(Properties config) {
-        float duration = Float.parseFloat(config.getProperty("tank.movement.duration.seconds", ""));
+        return readMovementDuration(config, "tank.movement.duration.seconds");
+    }
+
+    static int readTankInitialHealth(Properties config) {
+        return readPositiveInt(config, "tank.initial.health");
+    }
+
+    static BulletSettings readBulletSettings(Properties config) {
+        return new BulletSettings(readPositiveInt(config, "bullet.damage"),
+                readMovementDuration(config, "bullet.movement.duration.seconds"));
+    }
+
+    private static int readPositiveInt(Properties config, String key) {
+        int value = Integer.parseInt(config.getProperty(key, ""));
+        if (value <= 0) {
+            throw new IllegalArgumentException(key + " must be positive");
+        }
+        return value;
+    }
+
+    private static float readMovementDuration(Properties config, String key) {
+        float duration = Float.parseFloat(config.getProperty(key, ""));
         if (duration <= 0f || !Float.isFinite(duration)) {
-            throw new IllegalArgumentException("tank.movement.duration.seconds must be positive and finite");
+            throw new IllegalArgumentException(key + " must be positive and finite");
         }
         return duration;
     }
