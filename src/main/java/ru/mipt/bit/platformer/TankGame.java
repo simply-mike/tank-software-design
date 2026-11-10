@@ -72,7 +72,10 @@ final class TankGame extends ApplicationAdapter {
         viewFactory = new ObjectViewFactory(batch, fieldGraphics, healthBars::isVisible);
         levelGraphics = new LevelGraphics(viewFactory);
         level.subscribe(levelGraphics);
+        resizeWindowToFitField();
+    }
 
+    private void resizeWindowToFitField() {
         Graphics.DisplayMode display = Gdx.graphics.getDisplayMode();
         Gdx.graphics.setWindowedMode(
                 (int) Math.min(fieldGraphics.getWorldWidth(), display.width * MAX_WINDOW_SCREEN_FRACTION),
