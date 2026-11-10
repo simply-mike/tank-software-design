@@ -67,6 +67,14 @@ public final class FieldGraphics implements Disposable, TilePlacement {
         renderer.render();
     }
 
+    public float getWorldWidth() {
+        return viewport.getWorldWidth();
+    }
+
+    public float getWorldHeight() {
+        return viewport.getWorldHeight();
+    }
+
     public void resize(int width, int height) {
         viewport.update(width, height, true);
     }

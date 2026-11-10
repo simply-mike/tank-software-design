@@ -2,6 +2,7 @@ package ru.mipt.bit.platformer;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.GridPoint2;
@@ -30,6 +31,9 @@ import static com.badlogic.gdx.Input.Keys.L;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
 final class TankGame extends ApplicationAdapter {
+
+    private static final float MAX_WINDOW_SCREEN_FRACTION = 0.9f;
+    private static final float CLEAR_BLUE = 0.2f;
 
     private final Level level;
     private final int aiTankCount;
@@ -68,11 +72,16 @@ final class TankGame extends ApplicationAdapter {
         viewFactory = new ObjectViewFactory(batch, fieldGraphics, healthBars::isVisible);
         levelGraphics = new LevelGraphics(viewFactory);
         level.subscribe(levelGraphics);
+
+        Graphics.DisplayMode display = Gdx.graphics.getDisplayMode();
+        Gdx.graphics.setWindowedMode(
+                (int) Math.min(fieldGraphics.getWorldWidth(), display.width * MAX_WINDOW_SCREEN_FRACTION),
+                (int) Math.min(fieldGraphics.getWorldHeight(), display.height * MAX_WINDOW_SCREEN_FRACTION));
     }
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0f, 0f, 0.2f, 1f);
+        Gdx.gl.glClearColor(0f, 0f, CLEAR_BLUE, 1f);
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 
         commands.clear();

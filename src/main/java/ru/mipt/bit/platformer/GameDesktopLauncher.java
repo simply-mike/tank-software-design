@@ -1,6 +1,5 @@
 package ru.mipt.bit.platformer;
 
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import ru.mipt.bit.platformer.model.BulletSettings;
@@ -17,6 +16,9 @@ import java.util.Random;
 
 public final class GameDesktopLauncher {
 
+    private static final int RANDOM_LEVEL_WIDTH = 10;
+    private static final int RANDOM_LEVEL_HEIGHT = 8;
+
     private GameDesktopLauncher() {
     }
 
@@ -25,7 +27,7 @@ public final class GameDesktopLauncher {
             throw new IllegalArgumentException("Usage: [random | path-to-level.txt]");
         }
         LevelSource source = args.length == 1 && args[0].equals("random")
-                ? new RandomLevelSource(10, 8, new Random())
+                ? new RandomLevelSource(RANDOM_LEVEL_WIDTH, RANDOM_LEVEL_HEIGHT, new Random())
                 : new FileLevelSource(args.length == 0
                         ? GameDesktopLauncher.class.getResource("/level.txt")
                         : Path.of(args[0]).toUri().toURL());
@@ -35,10 +37,6 @@ public final class GameDesktopLauncher {
                 readTankInitialHealth(gameConfig), readBulletSettings(gameConfig));
 
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-        Graphics.DisplayMode display = Lwjgl3ApplicationConfiguration.getDisplayMode();
-        config.setWindowedMode(
-                (int) Math.min(level.getWidth() * 128L, display.width * 9L / 10),
-                (int) Math.min(level.getHeight() * 128L, display.height * 9L / 10));
         new Lwjgl3Application(game, config);
     }
 

@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static ru.mipt.bit.platformer.TankFixtures.spawnTestTank;
 
 public class LevelSourceTest {
 
@@ -38,7 +39,7 @@ public class LevelSourceTest {
             assertTrue(level.isFree(new GridPoint2(2, 2)));
             assertFalse(level.isFree(new GridPoint2(3, 0)));
 
-            Tank tank = level.spawnTank(level.getPlayerPosition(), 0.4f);
+            Tank tank = spawnTestTank(level, level.getPlayerPosition(), 0.4f);
             assertFalse(level.isFree(level.getPlayerPosition()));
             tank.move(Direction.RIGHT);
             assertEquals(new GridPoint2(0, 1), tank.getDestinationCoordinates());

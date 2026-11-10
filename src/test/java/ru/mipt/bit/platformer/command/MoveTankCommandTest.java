@@ -11,14 +11,15 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static ru.mipt.bit.platformer.TankFixtures.spawnTestTank;
 
 public class MoveTankCommandTest {
 
     @Test
     public void defersMoveAndPreservesReceiverAndDirection() {
         Level level = new Level(4, 4, List.of(), new GridPoint2(0, 0));
-        Tank receiver = level.spawnTank(new GridPoint2(1, 1), 0.4f);
-        Tank other = level.spawnTank(new GridPoint2(3, 3), 0.4f);
+        Tank receiver = spawnTestTank(level, new GridPoint2(1, 1), 0.4f);
+        Tank other = spawnTestTank(level, new GridPoint2(3, 3), 0.4f);
         Command command = new MoveTankCommand(receiver, Direction.UP);
 
         assertFalse(receiver.isMoving());

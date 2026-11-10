@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static ru.mipt.bit.platformer.TankFixtures.spawnTestTank;
 
 public class SimulationTimeTest {
 
@@ -31,8 +32,8 @@ public class SimulationTimeTest {
     @Test
     public void headOnBulletsCollideEvenWhenTheirEndpointsSwap() {
         Level level = new Level(5, 1, List.of(), new GridPoint2(0, 0));
-        Tank first = level.spawnTank(new GridPoint2(0, 0), 0.4f);
-        Tank second = level.spawnTank(new GridPoint2(4, 0), 0.4f);
+        Tank first = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
+        Tank second = spawnTestTank(level, new GridPoint2(4, 0), 0.4f);
         second.move(Direction.LEFT);
         second.update(0.4f);
         first.shoot();
@@ -72,8 +73,8 @@ public class SimulationTimeTest {
     @Test
     public void tankFinishingItsMoveBeforeBulletArrivalReleasesItsSourceCell() {
         Level level = new Level(5, 2, List.of(), new GridPoint2(0, 0));
-        Tank shooter = level.spawnTank(new GridPoint2(0, 0), 0.4f);
-        Tank target = level.spawnTank(new GridPoint2(2, 0), 0.05f);
+        Tank shooter = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
+        Tank target = spawnTestTank(level, new GridPoint2(2, 0), 0.05f);
         shooter.shoot();
         target.move(Direction.UP);
 
@@ -86,7 +87,7 @@ public class SimulationTimeTest {
     @Test
     public void simultaneousBulletContactsDoNotLeaveAnUnprocessedThirdBullet() {
         Level level = new Level(5, 2, List.of(), new GridPoint2(0, 0));
-        Tank shooter = level.spawnTank(new GridPoint2(0, 1), 0.4f);
+        Tank shooter = spawnTestTank(level, new GridPoint2(0, 1), 0.4f);
         for (int i = 0; i < 3; i++) {
             level.add(new Bullet(new GridPoint2(2, 0), Direction.RIGHT,
                     new BulletSettings(1, 0.1f), shooter));
@@ -112,8 +113,8 @@ public class SimulationTimeTest {
 
     private static Level parallelShots(boolean frontFirst) {
         Level level = new Level(10, 2, List.of(), new GridPoint2(0, 0));
-        Tank rear = level.spawnTank(new GridPoint2(0, 0), 0.4f);
-        Tank front = level.spawnTank(new GridPoint2(6, 0), 0.4f);
+        Tank rear = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
+        Tank front = spawnTestTank(level, new GridPoint2(6, 0), 0.4f);
         if (frontFirst) {
             front.shoot();
             rear.shoot();

@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static ru.mipt.bit.platformer.TankFixtures.spawnTestTank;
 
 public class LevelObserverTest {
 
@@ -17,7 +18,7 @@ public class LevelObserverTest {
     public void replaysInitialObjectsAndReportsLaterAdditionsWithoutDuplicates() {
         Tree tree = new Tree(new GridPoint2(2, 0));
         Level level = new Level(4, 1, List.of(tree), new GridPoint2(0, 0));
-        Tank tank = level.spawnTank(new GridPoint2(0, 0), 0.4f);
+        Tank tank = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
         RecordingListener listener = new RecordingListener();
 
         level.subscribe(listener);
@@ -33,7 +34,7 @@ public class LevelObserverTest {
     @Test
     public void removalIsPublishedAfterModelChangesAndOnlyOnce() {
         Level level = new Level(2, 1, List.of(), new GridPoint2(0, 0));
-        Tank tank = level.spawnTank(new GridPoint2(0, 0), 0.4f);
+        Tank tank = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
         AtomicInteger removals = new AtomicInteger();
         level.subscribe(new LevelListener() {
             @Override public void objectAdded(LevelObject object) {
@@ -59,7 +60,7 @@ public class LevelObserverTest {
         RecordingListener listener = new RecordingListener();
         level.subscribe(listener);
         level.unsubscribe(listener);
-        Tank tank = level.spawnTank(new GridPoint2(0, 0), 0.4f);
+        Tank tank = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
         assertTrue(listener.added.isEmpty());
 
         level.subscribe(listener);
@@ -72,7 +73,7 @@ public class LevelObserverTest {
     @Test
     public void collisionsNotifyRemovalOfBulletsAndDestroyedTanksExactlyOnce() {
         Level level = new Level(3, 1, List.of(), new GridPoint2(0, 0));
-        Tank shooter = level.spawnTank(new GridPoint2(0, 0), 0.4f);
+        Tank shooter = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
         Tank target = level.spawnTank(new GridPoint2(1, 0), 0.4f, 0, new BulletSettings(1, 0.1f));
         RecordingListener listener = new RecordingListener();
         level.subscribe(listener);
@@ -100,7 +101,7 @@ public class LevelObserverTest {
         RecordingListener other = new RecordingListener();
         level.subscribe(other);
 
-        Tank tank = level.spawnTank(new GridPoint2(0, 0), 0.4f);
+        Tank tank = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
         tank.shoot();
 
         assertEquals(1, additions.get());

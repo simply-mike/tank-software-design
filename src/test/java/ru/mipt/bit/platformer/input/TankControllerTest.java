@@ -15,13 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static ru.mipt.bit.platformer.TankFixtures.spawnTestTank;
 
 public class TankControllerTest {
 
     @Test
     public void spaceQueuesShootingThroughTheSameCommandPipeline() {
         Level level = new Level(4, 4, List.of(), new GridPoint2(0, 0));
-        Tank tank = level.spawnTank(new GridPoint2(1, 1), 0.4f);
+        Tank tank = spawnTestTank(level, new GridPoint2(1, 1), 0.4f);
         List<Command> commands = new ArrayList<>();
         ButtonPressHandler handler = new ButtonPressHandler(key -> key == Input.Keys.SPACE, commands::add);
         new TankController(handler, tank).control();
@@ -50,7 +51,7 @@ public class TankControllerTest {
 
     private static void assertMoves(int pressedKey, Direction expectedDirection) {
         Level level = new Level(10, 8, Collections.emptyList(), new GridPoint2(0, 0));
-        Tank tank = level.spawnTank(new GridPoint2(1, 1), 0.4f);
+        Tank tank = spawnTestTank(level, new GridPoint2(1, 1), 0.4f);
         ButtonPressHandler handler = new ButtonPressHandler(key -> key == pressedKey, Command::execute);
         TankControlStrategy controller = new TankController(handler, tank);
 

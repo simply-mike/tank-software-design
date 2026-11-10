@@ -1,6 +1,7 @@
 package ru.mipt.bit.platformer.graphics;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Rectangle;
 import org.junit.Test;
@@ -13,13 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static ru.mipt.bit.platformer.TankFixtures.spawnTestTank;
 
 public class HealthBarDecoratorTest {
 
     @Test
     public void drawsBaseViewAndUsesCurrentHealthOnlyWhenEnabled() {
         GridPoint2 start = new GridPoint2(0, 0);
-        Tank tank = new Level(1, 1, List.of(), start).spawnTank(start, 0.4f);
+        Tank tank = spawnTestTank(new Level(1, 1, List.of(), start), start, 0.4f);
         HealthBarVisibility visibility = new HealthBarVisibility();
         Command toggle = visibility::toggle;
         List<Float> widths = new ArrayList<>();
@@ -43,7 +45,7 @@ public class HealthBarDecoratorTest {
         };
         List<String> baseDraws = new ArrayList<>();
         Runnable view = new HealthBarDecorator(() -> baseDraws.add("tank"), tank,
-                visibility::isVisible, batch, tiles, null);
+                visibility::isVisible, batch, tiles, new TextureRegion(), new TextureRegion());
 
         view.run();
         assertEquals(List.of(), widths);

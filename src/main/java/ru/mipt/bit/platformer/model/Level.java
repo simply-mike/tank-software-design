@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 
 public final class Level implements TileAvailability {
 
-    private static final BulletSettings STANDARD_BULLET = new BulletSettings(30, 0.1f);
-
     private final int width;
     private final int height;
     private final GridPoint2 playerPosition;
@@ -57,10 +55,6 @@ public final class Level implements TileAvailability {
 
     public GridPoint2 getPlayerPosition() {
         return new GridPoint2(playerPosition);
-    }
-
-    public Tank spawnTank(GridPoint2 coordinates, float movementDuration) {
-        return spawnTank(coordinates, movementDuration, 100, STANDARD_BULLET);
     }
 
     public Tank spawnTank(GridPoint2 coordinates, float movementDuration,

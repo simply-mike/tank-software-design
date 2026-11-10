@@ -13,15 +13,20 @@ import static ru.mipt.bit.platformer.graphics.util.TextureRegionUtils.drawUnscal
 
 public final class BulletGraphics implements Disposable {
 
+    private static final int SPRITE_SIZE = 12;
+    private static final int BULLET_RADIUS = 5;
+    private static final int BULLET_COLOR_RGBA = 0xffd833ff;
+
     private final Texture texture;
     private final TextureRegion graphics;
     private final Rectangle rectangle;
 
     public BulletGraphics() {
-        Pixmap pixels = new Pixmap(12, 12, Pixmap.Format.RGBA8888);
+        Pixmap pixels = new Pixmap(SPRITE_SIZE, SPRITE_SIZE, Pixmap.Format.RGBA8888);
         try {
-            pixels.setColor(1f, 0.85f, 0.2f, 1f);
-            pixels.fillCircle(6, 6, 5);
+            pixels.setColor(BULLET_COLOR_RGBA);
+            int center = SPRITE_SIZE / 2;
+            pixels.fillCircle(center, center, BULLET_RADIUS);
             texture = new Texture(pixels);
         } finally {
             pixels.dispose();

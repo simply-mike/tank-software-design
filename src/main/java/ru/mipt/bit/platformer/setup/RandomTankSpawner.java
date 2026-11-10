@@ -19,10 +19,6 @@ public final class RandomTankSpawner {
         this.random = random;
     }
 
-    public List<Tank> spawn(Level level, int count, float movementDuration) {
-        return spawn(level, count, tile -> level.spawnTank(tile, movementDuration));
-    }
-
     public List<Tank> spawn(Level level, int count, Function<GridPoint2, Tank> spawnTank) {
         if (count < 0) {
             throw new IllegalArgumentException("Tank count must not be negative");

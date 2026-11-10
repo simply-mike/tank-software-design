@@ -3,6 +3,7 @@ package ru.mipt.bit.platformer.graphics;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Disposable;
 import ru.mipt.bit.platformer.model.Bullet;
 import ru.mipt.bit.platformer.model.LevelObject;
@@ -15,6 +16,11 @@ import java.util.function.Function;
 
 public final class ObjectViewFactory implements Function<LevelObject, Runnable>, Disposable {
 
+    private static final int BACKGROUND_COLOR_RGBA = 0x252525ff;
+    private static final int FILL_COLOR_RGBA = 0x55e665ff;
+    private static final int BACKGROUND_PIXEL_X = 0;
+    private static final int FILL_PIXEL_X = 1;
+
     private final Batch batch;
     private final TilePlacement tiles;
     private final TankGraphics tanks;
@@ -22,6 +28,8 @@ public final class ObjectViewFactory implements Function<LevelObject, Runnable>,
     private final BulletGraphics bullets;
 
     private final Texture healthBarColors;
+    private final TextureRegion healthBarBackground;
+    private final TextureRegion healthBarFill;
     private final BooleanSupplier healthBarsVisible;
 
     public ObjectViewFactory(Batch batch, TilePlacement tiles, BooleanSupplier healthBarsVisible) {
@@ -33,12 +41,14 @@ public final class ObjectViewFactory implements Function<LevelObject, Runnable>,
         bullets = new BulletGraphics();
         Pixmap colors = new Pixmap(2, 1, Pixmap.Format.RGBA8888);
         try {
-            colors.drawPixel(0, 0, 0x252525ff);
-            colors.drawPixel(1, 0, 0x55e665ff);
+            colors.drawPixel(BACKGROUND_PIXEL_X, 0, BACKGROUND_COLOR_RGBA);
+            colors.drawPixel(FILL_PIXEL_X, 0, FILL_COLOR_RGBA);
             healthBarColors = new Texture(colors);
         } finally {
             colors.dispose();
         }
+        healthBarBackground = new TextureRegion(healthBarColors, BACKGROUND_PIXEL_X, 0, 1, 1);
+        healthBarFill = new TextureRegion(healthBarColors, FILL_PIXEL_X, 0, 1, 1);
     }
 
     @Override
@@ -46,7 +56,7 @@ public final class ObjectViewFactory implements Function<LevelObject, Runnable>,
         if (object instanceof Tank) {
             Tank tank = (Tank) object;
             return new HealthBarDecorator(() -> tanks.draw(batch, tank, tiles),
-                    tank, healthBarsVisible, batch, tiles, healthBarColors);
+                    tank, healthBarsVisible, batch, tiles, healthBarBackground, healthBarFill);
         }
         if (object instanceof Tree) {
             return () -> trees.draw(batch, (Tree) object, tiles);
