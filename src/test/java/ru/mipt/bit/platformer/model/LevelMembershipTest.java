@@ -12,6 +12,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static ru.mipt.bit.platformer.TankFixtures.spawnTestTank;
 
 public class LevelMembershipTest {
 
@@ -29,7 +30,7 @@ public class LevelMembershipTest {
     @Test
     public void removalEndsTankActivityWithoutChangingHealthOrExecutingQueuedCommands() {
         Level level = emptyLevel();
-        Tank tank = level.spawnTank(new GridPoint2(0, 0), 0.4f);
+        Tank tank = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
         Command move = new MoveTankCommand(tank, Direction.UP);
         Command shoot = new ShootTankCommand(tank);
 
@@ -40,7 +41,7 @@ public class LevelMembershipTest {
         level.add(tank);
 
         assertTrue(tank.isDestroyed());
-        assertEquals(3, tank.getHealth());
+        assertEquals(100, tank.getHealth());
         assertEquals(new GridPoint2(0, 0), tank.getDestinationCoordinates());
         assertTrue(level.getObjects().isEmpty());
     }
@@ -48,7 +49,7 @@ public class LevelMembershipTest {
     @Test
     public void removedBulletCannotContinueMovingOrBeRegisteredAgain() {
         Level level = emptyLevel();
-        Tank tank = level.spawnTank(new GridPoint2(0, 0), 0.4f);
+        Tank tank = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
         tank.shoot();
         Bullet bullet = (Bullet) level.getObjects().get(1);
 
@@ -65,7 +66,7 @@ public class LevelMembershipTest {
     public void anotherLevelCannotRemoveOrDeactivateTheOwnersTank() {
         Level owner = emptyLevel();
         Level other = emptyLevel();
-        Tank tank = owner.spawnTank(new GridPoint2(0, 0), 0.4f);
+        Tank tank = spawnTestTank(owner, new GridPoint2(0, 0), 0.4f);
 
         other.remove(tank);
         tank.shoot();

@@ -1,8 +1,8 @@
 package ru.mipt.bit.platformer;
 
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import ru.mipt.bit.platformer.model.BulletSettings;
 import ru.mipt.bit.platformer.setup.FileLevelSource;
 import ru.mipt.bit.platformer.model.Level;
 import ru.mipt.bit.platformer.setup.LevelSource;
@@ -16,6 +16,9 @@ import java.util.Random;
 
 public final class GameDesktopLauncher {
 
+    private static final int RANDOM_LEVEL_WIDTH = 10;
+    private static final int RANDOM_LEVEL_HEIGHT = 8;
+
     private GameDesktopLauncher() {
     }
 
@@ -24,19 +27,16 @@ public final class GameDesktopLauncher {
             throw new IllegalArgumentException("Usage: [random | path-to-level.txt]");
         }
         LevelSource source = args.length == 1 && args[0].equals("random")
-                ? new RandomLevelSource(10, 8, new Random())
+                ? new RandomLevelSource(RANDOM_LEVEL_WIDTH, RANDOM_LEVEL_HEIGHT, new Random())
                 : new FileLevelSource(args.length == 0
                         ? GameDesktopLauncher.class.getResource("/level.txt")
                         : Path.of(args[0]).toUri().toURL());
         Level level = source.load();
         Properties gameConfig = loadGameConfig();
-        TankGame game = new TankGame(level, readAiTankCount(gameConfig), readTankMovementDuration(gameConfig));
+        TankGame game = new TankGame(level, readAiTankCount(gameConfig), readTankMovementDuration(gameConfig),
+                readTankInitialHealth(gameConfig), readBulletSettings(gameConfig));
 
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-        Graphics.DisplayMode display = Lwjgl3ApplicationConfiguration.getDisplayMode();
-        config.setWindowedMode(
-                (int) Math.min(level.getWidth() * 128L, display.width * 9L / 10),
-                (int) Math.min(level.getHeight() * 128L, display.height * 9L / 10));
         new Lwjgl3Application(game, config);
     }
 
@@ -60,9 +60,30 @@ public final class GameDesktopLauncher {
     }
 
     static float readTankMovementDuration(Properties config) {
-        float duration = Float.parseFloat(config.getProperty("tank.movement.duration.seconds", ""));
+        return readMovementDuration(config, "tank.movement.duration.seconds");
+    }
+
+    static int readTankInitialHealth(Properties config) {
+        return readPositiveInt(config, "tank.initial.health");
+    }
+
+    static BulletSettings readBulletSettings(Properties config) {
+        return new BulletSettings(readPositiveInt(config, "bullet.damage"),
+                readMovementDuration(config, "bullet.movement.duration.seconds"));
+    }
+
+    private static int readPositiveInt(Properties config, String key) {
+        int value = Integer.parseInt(config.getProperty(key, ""));
+        if (value <= 0) {
+            throw new IllegalArgumentException(key + " must be positive");
+        }
+        return value;
+    }
+
+    private static float readMovementDuration(Properties config, String key) {
+        float duration = Float.parseFloat(config.getProperty(key, ""));
         if (duration <= 0f || !Float.isFinite(duration)) {
-            throw new IllegalArgumentException("tank.movement.duration.seconds must be positive and finite");
+            throw new IllegalArgumentException(key + " must be positive and finite");
         }
         return duration;
     }

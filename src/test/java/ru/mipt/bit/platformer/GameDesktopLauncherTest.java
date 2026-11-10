@@ -1,6 +1,7 @@
 package ru.mipt.bit.platformer;
 
 import org.junit.Test;
+import ru.mipt.bit.platformer.model.BulletSettings;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -16,6 +17,10 @@ public class GameDesktopLauncherTest {
 
         assertEquals(5, GameDesktopLauncher.readAiTankCount(config));
         assertEquals(0.4f, GameDesktopLauncher.readTankMovementDuration(config), 0f);
+        assertEquals(100, GameDesktopLauncher.readTankInitialHealth(config));
+        BulletSettings bullets = GameDesktopLauncher.readBulletSettings(config);
+        assertEquals(30, bullets.getDamage());
+        assertEquals(0.1f, bullets.getMovementDuration(), 0f);
     }
 
     @Test
@@ -23,9 +28,16 @@ public class GameDesktopLauncherTest {
         Properties config = new Properties();
         config.setProperty("ai.tank.count", "0");
         config.setProperty("tank.movement.duration.seconds", "1.25");
+        config.setProperty("tank.initial.health", "120");
+        config.setProperty("bullet.damage", "40");
+        config.setProperty("bullet.movement.duration.seconds", "0.25");
 
         assertEquals(0, GameDesktopLauncher.readAiTankCount(config));
         assertEquals(1.25f, GameDesktopLauncher.readTankMovementDuration(config), 0f);
+        assertEquals(120, GameDesktopLauncher.readTankInitialHealth(config));
+        BulletSettings bullets = GameDesktopLauncher.readBulletSettings(config);
+        assertEquals(40, bullets.getDamage());
+        assertEquals(0.25f, bullets.getMovementDuration(), 0f);
     }
 
     @Test

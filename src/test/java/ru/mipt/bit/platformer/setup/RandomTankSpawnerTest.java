@@ -19,21 +19,25 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static ru.mipt.bit.platformer.TankFixtures.spawnTestTank;
+import static ru.mipt.bit.platformer.TankFixtures.testTankFactory;
 
 public class RandomTankSpawnerTest {
 
     @Test
     public void spawnsDistinctTanksInsideLevelAwayFromTreesAndPlayer() {
         Level level = new RandomLevelSource(10, 8, new Random(7)).load();
-        Tank player = level.spawnTank(level.getPlayerPosition(), 0.4f);
+        Tank player = spawnTestTank(level, level.getPlayerPosition(), 0.4f);
 
-        List<Tank> tanks = new RandomTankSpawner(new Random(7)).spawn(level, 5, 0.8f);
+        List<Tank> tanks = new RandomTankSpawner(new Random(7)).spawn(level, 5, testTankFactory(level, 0.8f));
 
         assertEquals(5, tanks.size());
+        assertEquals(100, player.getHealth());
         assertEquals(level.getPlayerPosition(), player.getCoordinates());
         Set<GridPoint2> positions = new HashSet<>();
         positions.add(player.getCoordinates());
         for (Tank tank : tanks) {
+            assertEquals(100, tank.getHealth());
             GridPoint2 position = tank.getCoordinates();
             assertTrue(positions.add(position));
             assertTrue(position.x >= 0 && position.x < level.getWidth());
@@ -48,16 +52,16 @@ public class RandomTankSpawnerTest {
     @Test
     public void fillsOnlyAvailableCellsWithoutRetryingForever() {
         Level level = new Level(4, 1, List.of(new Tree(new GridPoint2(3, 0))), new GridPoint2(0, 0));
-        Tank player = level.spawnTank(level.getPlayerPosition(), 0.4f);
+        Tank player = spawnTestTank(level, level.getPlayerPosition(), 0.4f);
         player.move(Direction.RIGHT);
         RandomTankSpawner spawner = new RandomTankSpawner(new Random(7));
 
-        List<Tank> tanks = spawner.spawn(level, 100, 0.8f);
+        List<Tank> tanks = spawner.spawn(level, 100, testTankFactory(level, 0.8f));
 
         assertEquals(1, tanks.size());
         Tank tank = tanks.get(0);
         assertEquals(new GridPoint2(2, 0), tank.getCoordinates());
-        assertTrue(spawner.spawn(level, 5, 0.8f).isEmpty());
+        assertTrue(spawner.spawn(level, 5, testTankFactory(level, 0.8f)).isEmpty());
         player.update(0.4f);
         tank.move(Direction.LEFT);
         assertFalse(tank.isMoving());
@@ -68,7 +72,7 @@ public class RandomTankSpawnerTest {
     @Test
     public void usesConfiguredMovementDuration() {
         Level empty = new Level(3, 1, List.of(), new GridPoint2(0, 0));
-        Tank slower = new RandomTankSpawner(new Random(7)).spawn(empty, 1, 0.8f).get(0);
+        Tank slower = new RandomTankSpawner(new Random(7)).spawn(empty, 1, testTankFactory(empty, 0.8f)).get(0);
         slower.move(slower.getCoordinates().x == 0 ? Direction.RIGHT : Direction.LEFT);
         slower.update(0.2f);
         assertEquals(0.25f, slower.getMovementProgress(), 0.0001f);
@@ -77,9 +81,9 @@ public class RandomTankSpawnerTest {
     @Test
     public void handlesLevelWithRoomOnlyForPlayer() {
         Level level = new Level(1, 1, List.of(), new GridPoint2(0, 0));
-        level.spawnTank(level.getPlayerPosition(), 0.4f);
+        spawnTestTank(level, level.getPlayerPosition(), 0.4f);
 
-        assertTrue(new RandomTankSpawner(new Random(7)).spawn(level, 5, 0.4f).isEmpty());
+        assertTrue(new RandomTankSpawner(new Random(7)).spawn(level, 5, testTankFactory(level, 0.4f)).isEmpty());
     }
 
     @Test
@@ -93,15 +97,15 @@ public class RandomTankSpawnerTest {
         Level level = new Level(2, 2, List.of(), new GridPoint2(0, 0));
         RandomTankSpawner spawner = new RandomTankSpawner(new Random(7));
 
-        assertTrue(spawner.spawn(level, 0, 0.4f).isEmpty());
-        assertThrows(IllegalArgumentException.class, () -> spawner.spawn(level, -1, 0.4f));
+        assertTrue(spawner.spawn(level, 0, testTankFactory(level, 0.4f)).isEmpty());
+        assertThrows(IllegalArgumentException.class, () -> spawner.spawn(level, -1, testTankFactory(level, 0.4f)));
         assertTrue(level.isFree(new GridPoint2(1, 1)));
     }
 
     private static List<GridPoint2> positionsForSeed(long seed) {
         Level level = new Level(4, 4, List.of(), new GridPoint2(0, 0));
-        level.spawnTank(level.getPlayerPosition(), 0.4f);
-        return new RandomTankSpawner(new Random(seed)).spawn(level, 5, 0.4f).stream()
+        spawnTestTank(level, level.getPlayerPosition(), 0.4f);
+        return new RandomTankSpawner(new Random(seed)).spawn(level, 5, testTankFactory(level, 0.4f)).stream()
                 .map(Tank::getCoordinates).collect(Collectors.toList());
     }
 }

@@ -28,26 +28,31 @@ public final class FieldGraphics implements Disposable, TilePlacement {
 
     public FieldGraphics(String levelPath, Batch batch, int width, int height) {
         level = new TmxMapLoader().load(levelPath);
-        TiledMapTileLayer groundLayer = getSingleLayer(level);
-        if (groundLayer.getWidth() != width || groundLayer.getHeight() != height) {
-            TiledMapTileLayer resized = new TiledMapTileLayer(
-                    width, height, groundLayer.getTileWidth(), groundLayer.getTileHeight());
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
-                    resized.setCell(x, y, groundLayer.getCell(
-                            x % groundLayer.getWidth(), y % groundLayer.getHeight()));
-                }
-            }
-            level.getLayers().remove(groundLayer);
-            level.getLayers().add(resized);
-            groundLayer = resized;
-        }
+        TiledMapTileLayer groundLayer = fitGroundLayerToLevel(width, height);
         renderer = new OrthogonalTiledMapRenderer(level, batch);
         camera = new OrthographicCamera();
         viewport = new FitViewport(width * groundLayer.getTileWidth(),
                 height * groundLayer.getTileHeight(), camera);
         resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         tileMovement = new TileMovement(groundLayer, Interpolation.smooth);
+    }
+
+    private TiledMapTileLayer fitGroundLayerToLevel(int width, int height) {
+        TiledMapTileLayer groundLayer = getSingleLayer(level);
+        if (groundLayer.getWidth() == width && groundLayer.getHeight() == height) {
+            return groundLayer;
+        }
+        TiledMapTileLayer resized = new TiledMapTileLayer(
+                width, height, groundLayer.getTileWidth(), groundLayer.getTileHeight());
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                resized.setCell(x, y, groundLayer.getCell(
+                        x % groundLayer.getWidth(), y % groundLayer.getHeight()));
+            }
+        }
+        level.getLayers().remove(groundLayer);
+        level.getLayers().add(resized);
+        return resized;
     }
 
     @Override
@@ -65,6 +70,14 @@ public final class FieldGraphics implements Disposable, TilePlacement {
         viewport.apply();
         renderer.setView(camera);
         renderer.render();
+    }
+
+    public float getWorldWidth() {
+        return viewport.getWorldWidth();
+    }
+
+    public float getWorldHeight() {
+        return viewport.getWorldHeight();
     }
 
     public void resize(int width, int height) {

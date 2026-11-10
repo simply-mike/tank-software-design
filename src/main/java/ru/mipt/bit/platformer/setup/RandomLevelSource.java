@@ -13,6 +13,7 @@ import java.util.Random;
 public final class RandomLevelSource implements LevelSource {
 
     private static final int MIN_TILES_FOR_PLAYER_MOVE_AND_TREE = 3;
+    private static final int TILES_PER_TREE = 5;
 
     private final int width;
     private final int height;
@@ -38,7 +39,7 @@ public final class RandomLevelSource implements LevelSource {
         }
         Collections.shuffle(tiles, random);
 
-        int treeCount = Math.max(1, tiles.size() / 5);
+        int treeCount = Math.max(1, tiles.size() / TILES_PER_TREE);
         GridPoint2 player = tiles.remove(0);
         // Leave room for the tank to move.
         for (int i = 0; i < tiles.size(); i++) {

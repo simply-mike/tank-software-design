@@ -18,13 +18,14 @@ import java.util.Random;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static ru.mipt.bit.platformer.TankFixtures.spawnTestTank;
 
 public class RandomTankControllerTest {
 
     @Test
     public void defersItsDecisionUntilCommandExecution() {
         Level level = new Level(5, 5, List.of(), new GridPoint2(0, 0));
-        Tank tank = level.spawnTank(new GridPoint2(2, 2), 0.4f);
+        Tank tank = spawnTestTank(level, new GridPoint2(2, 2), 0.4f);
         List<Command> commands = new ArrayList<>();
         TankControlStrategy controller = new RandomTankController(tank, new Random(7), commands::add);
 
@@ -38,7 +39,7 @@ public class RandomTankControllerTest {
     @Test
     public void choosesRepeatableActionsOnlyWhenTankIsIdle() {
         Level level = new Level(5, 5, List.of(), new GridPoint2(0, 0));
-        Tank tank = level.spawnTank(new GridPoint2(2, 2), 0.4f);
+        Tank tank = spawnTestTank(level, new GridPoint2(2, 2), 0.4f);
         TankControlStrategy controller = new RandomTankController(tank, new Random(7), Command::execute);
         Random expectedRandom = new Random(7);
         Direction first = Direction.values()[expectedRandom.nextInt(5)];
@@ -68,7 +69,7 @@ public class RandomTankControllerTest {
     @Test
     public void canRecommendShootingAndStopsAfterTankDestruction() {
         Level level = new Level(5, 5, List.of(), new GridPoint2(0, 0));
-        Tank tank = level.spawnTank(new GridPoint2(2, 2), 0.4f);
+        Tank tank = spawnTestTank(level, new GridPoint2(2, 2), 0.4f);
         List<Command> commands = new ArrayList<>();
         Random random = new Random(7) {
             @Override public int nextInt(int bound) { return bound - 1; }
@@ -81,7 +82,7 @@ public class RandomTankControllerTest {
         assertTrue(level.getObjects().stream().anyMatch(Bullet.class::isInstance));
         assertFalse(tank.isMoving());
 
-        tank.takeDamage(4);
+        tank.takeDamage(tank.getHealth() + 1);
         controller.control();
         assertEquals(1, commands.size());
     }
@@ -90,8 +91,8 @@ public class RandomTankControllerTest {
     public void bothStrategiesRespectBoundariesObstaclesAndTanks() {
         for (boolean ai : new boolean[]{false, true}) {
             Level level = new Level(3, 2, List.of(new Tree(new GridPoint2(0, 1))), new GridPoint2(0, 0));
-            Tank tank = level.spawnTank(new GridPoint2(0, 0), 0.4f);
-            Tank blocker = level.spawnTank(new GridPoint2(1, 0), 0.4f);
+            Tank tank = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
+            Tank blocker = spawnTestTank(level, new GridPoint2(1, 0), 0.4f);
             for (Direction direction : Direction.values()) {
                 strategy(tank, direction, ai).control();
                 assertEquals(direction, tank.getDirection());
@@ -110,8 +111,8 @@ public class RandomTankControllerTest {
     @Test
     public void aiDoesNotTakeOverPlayerAndKeyboardDoesNotControlAi() {
         Level level = new Level(4, 4, List.of(), new GridPoint2(0, 0));
-        Tank player = level.spawnTank(new GridPoint2(0, 0), 0.4f);
-        Tank ai = level.spawnTank(new GridPoint2(2, 2), 0.4f);
+        Tank player = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
+        Tank ai = spawnTestTank(level, new GridPoint2(2, 2), 0.4f);
         TankControlStrategy keyboard = strategy(player, Direction.UP, false);
         TankControlStrategy random = strategy(ai, Direction.DOWN, true);
 

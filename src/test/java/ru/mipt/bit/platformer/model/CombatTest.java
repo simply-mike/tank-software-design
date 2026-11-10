@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
+import static ru.mipt.bit.platformer.TankFixtures.spawnTestTank;
 
 public class CombatTest {
 
@@ -17,8 +18,8 @@ public class CombatTest {
     public void shootingCommandDefersCreationAndPreservesShooterAndDirection() {
         for (Direction direction : Direction.values()) {
             Level level = emptyLevel();
-            Tank shooter = level.spawnTank(new GridPoint2(3, 3), 0.4f);
-            Tank other = level.spawnTank(new GridPoint2(0, 0), 0.4f);
+            Tank shooter = spawnTestTank(level, new GridPoint2(3, 3), 0.4f);
+            Tank other = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
             shooter.move(direction);
             ShootTankCommand command = new ShootTankCommand(shooter);
             assertTrue(bullets(level).isEmpty());
@@ -39,7 +40,7 @@ public class CombatTest {
     @Test
     public void bulletMovesAcrossEveryCellAndKeepsFractionalProgress() {
         Level level = emptyLevel();
-        level.spawnTank(new GridPoint2(0, 0), 0.4f).shoot();
+        spawnTestTank(level, new GridPoint2(0, 0), 0.4f).shoot();
         Bullet bullet = bullets(level).get(0);
 
         level.update(0.25f);
@@ -56,39 +57,39 @@ public class CombatTest {
     public void hitsAdjacentTankBeforeAnyMovementEvenOnZeroTick() {
         Level level = emptyLevel();
         Tank shooter = level.spawnTank(new GridPoint2(0, 0), 0.4f, 3, new BulletSettings(2, 0.1f));
-        Tank target = level.spawnTank(new GridPoint2(1, 0), 0.4f);
+        Tank target = spawnTestTank(level, new GridPoint2(1, 0), 0.4f);
 
         shooter.shoot();
         level.update(0f);
 
-        assertEquals(1, target.getHealth());
+        assertEquals(98, target.getHealth());
         assertTrue(bullets(level).isEmpty());
     }
 
     @Test
     public void adjacentMovingTargetCannotEscapeTheSpawnContactOnALargeTick() {
         Level level = emptyLevel();
-        Tank shooter = level.spawnTank(new GridPoint2(0, 0), 0.4f);
-        Tank target = level.spawnTank(new GridPoint2(1, 0), 0.4f);
+        Tank shooter = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
+        Tank target = spawnTestTank(level, new GridPoint2(1, 0), 0.4f);
         target.move(Direction.UP);
         shooter.shoot();
 
         level.update(0.4f);
 
-        assertEquals(2, target.getHealth());
+        assertEquals(70, target.getHealth());
         assertTrue(bullets(level).isEmpty());
     }
 
     @Test
     public void hitsTankOnItsPathDuringLargeTick() {
         Level level = emptyLevel();
-        Tank shooter = level.spawnTank(new GridPoint2(0, 0), 0.4f);
-        Tank target = level.spawnTank(new GridPoint2(4, 0), 0.4f);
+        Tank shooter = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
+        Tank target = spawnTestTank(level, new GridPoint2(4, 0), 0.4f);
         shooter.shoot();
 
         level.update(1f);
 
-        assertEquals(2, target.getHealth());
+        assertEquals(70, target.getHealth());
         assertTrue(bullets(level).isEmpty());
     }
 
@@ -97,7 +98,7 @@ public class CombatTest {
         for (int x : new int[]{1, 4}) {
             Tree tree = new Tree(new GridPoint2(x, 0));
             Level level = new Level(7, 1, List.of(tree), new GridPoint2(0, 0));
-            level.spawnTank(new GridPoint2(0, 0), 0.4f).shoot();
+            spawnTestTank(level, new GridPoint2(0, 0), 0.4f).shoot();
 
             level.update(1f);
 
@@ -112,7 +113,7 @@ public class CombatTest {
         Level level = emptyLevel();
         Obstacle rock = coordinates -> coordinates.equals(new GridPoint2(2, 0));
         level.add(rock);
-        Tank shooter = level.spawnTank(new GridPoint2(0, 0), 0.4f);
+        Tank shooter = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
         shooter.shoot();
 
         level.update(0.2f);
@@ -146,8 +147,8 @@ public class CombatTest {
     @Test
     public void destroysBothBulletsWhenTheyAppearInTheSameCell() {
         Level level = emptyLevel();
-        Tank first = level.spawnTank(new GridPoint2(0, 0), 0.4f);
-        Tank second = level.spawnTank(new GridPoint2(3, 0), 0.4f);
+        Tank first = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
+        Tank second = spawnTestTank(level, new GridPoint2(3, 0), 0.4f);
         second.move(Direction.LEFT);
         second.update(0.4f);
         first.shoot();
@@ -156,15 +157,15 @@ public class CombatTest {
         level.update(0f);
 
         assertTrue(bullets(level).isEmpty());
-        assertEquals(3, first.getHealth());
-        assertEquals(3, second.getHealth());
+        assertEquals(100, first.getHealth());
+        assertEquals(100, second.getHealth());
     }
 
     @Test
     public void destroysBothBulletsMeetingHeadOnDuringMovement() {
         Level level = emptyLevel();
-        Tank first = level.spawnTank(new GridPoint2(0, 0), 0.4f);
-        Tank second = level.spawnTank(new GridPoint2(6, 0), 0.4f);
+        Tank first = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
+        Tank second = spawnTestTank(level, new GridPoint2(6, 0), 0.4f);
         second.move(Direction.LEFT);
         second.update(0.4f);
         first.shoot();
@@ -173,22 +174,22 @@ public class CombatTest {
         level.update(0.2f);
 
         assertTrue(bullets(level).isEmpty());
-        assertEquals(3, first.getHealth());
-        assertEquals(3, second.getHealth());
+        assertEquals(100, first.getHealth());
+        assertEquals(100, second.getHealth());
     }
 
     @Test
     public void hitsBothCellsOccupiedByAMovingTank() {
         for (int y : new int[]{0, 1}) {
             Level level = emptyLevel();
-            Tank shooter = level.spawnTank(new GridPoint2(0, y), 0.4f);
-            Tank target = level.spawnTank(new GridPoint2(2, 0), 0.4f);
+            Tank shooter = spawnTestTank(level, new GridPoint2(0, y), 0.4f);
+            Tank target = spawnTestTank(level, new GridPoint2(2, 0), 0.4f);
             target.move(Direction.UP);
             shooter.shoot();
 
             level.update(0.1f);
 
-            assertEquals(2, target.getHealth());
+            assertEquals(70, target.getHealth());
             assertTrue(bullets(level).isEmpty());
         }
     }
@@ -196,16 +197,16 @@ public class CombatTest {
     @Test
     public void movingShooterDoesNotHitItselfAndBulletsDoNotBlockTankMovement() {
         Level level = emptyLevel();
-        Tank shooter = level.spawnTank(new GridPoint2(0, 0), 0.4f);
+        Tank shooter = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
         shooter.move(Direction.RIGHT);
         shooter.shoot();
         level.update(0f);
-        assertEquals(3, shooter.getHealth());
+        assertEquals(100, shooter.getHealth());
         assertEquals(1, bullets(level).size());
 
         Level otherLevel = emptyLevel();
-        otherLevel.spawnTank(new GridPoint2(0, 0), 0.4f).shoot();
-        Tank other = otherLevel.spawnTank(new GridPoint2(2, 0), 0.4f);
+        spawnTestTank(otherLevel, new GridPoint2(0, 0), 0.4f).shoot();
+        Tank other = spawnTestTank(otherLevel, new GridPoint2(2, 0), 0.4f);
         other.move(Direction.LEFT);
         assertTrue(other.isMoving());
     }
@@ -214,15 +215,15 @@ public class CombatTest {
     public void removesBulletsAtEveryBoundaryIncludingOutOfBoundsSpawn() {
         for (Direction direction : Direction.values()) {
             Level level = new Level(1, 1, List.of(), new GridPoint2(0, 0));
-            Tank shooter = level.spawnTank(new GridPoint2(0, 0), 0.4f);
+            Tank shooter = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
             shooter.move(direction);
             shooter.shoot();
             level.update(0f);
             assertTrue(bullets(level).isEmpty());
-            assertEquals(3, shooter.getHealth());
+            assertEquals(100, shooter.getHealth());
         }
         Level level = emptyLevel();
-        level.spawnTank(new GridPoint2(0, 0), 0.4f).shoot();
+        spawnTestTank(level, new GridPoint2(0, 0), 0.4f).shoot();
         level.update(Float.MAX_VALUE);
         assertTrue(bullets(level).isEmpty());
     }
@@ -230,7 +231,7 @@ public class CombatTest {
     @Test
     public void destroyedTanksIgnoreQueuedCommandsAndFurtherDamage() {
         Level level = emptyLevel();
-        Tank target = level.spawnTank(new GridPoint2(1, 0), 0.4f);
+        Tank target = spawnTestTank(level, new GridPoint2(1, 0), 0.4f);
         MoveTankCommand move = new MoveTankCommand(target, Direction.UP);
         ShootTankCommand shoot = new ShootTankCommand(target);
         target.takeDamage(Integer.MAX_VALUE);
@@ -277,7 +278,7 @@ public class CombatTest {
         assertThrows(IllegalArgumentException.class,
                 () -> level.spawnTank(new GridPoint2(0, 0), 0.4f, -1, new BulletSettings(1, 0.1f)));
         assertTrue(level.getObjects().isEmpty());
-        Tank shooter = level.spawnTank(new GridPoint2(0, 0), 0.4f);
+        Tank shooter = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
         assertThrows(IllegalArgumentException.class, () -> shooter.takeDamage(0));
         shooter.shoot();
         Bullet bullet = bullets(level).get(0);

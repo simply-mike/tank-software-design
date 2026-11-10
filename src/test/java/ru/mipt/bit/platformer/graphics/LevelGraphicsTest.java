@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertEquals;
+import static ru.mipt.bit.platformer.TankFixtures.spawnTestTank;
 
 public class LevelGraphicsTest {
 
@@ -20,7 +21,7 @@ public class LevelGraphicsTest {
     public void rendersInitialAndDynamicObjectsAndStopsDrawingRemovedObjects() {
         Tree tree = new Tree(new GridPoint2(3, 0));
         Level level = new Level(4, 1, List.of(tree), new GridPoint2(0, 0));
-        Tank tank = level.spawnTank(new GridPoint2(0, 0), 0.4f);
+        Tank tank = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
         List<LevelObject> drawn = new ArrayList<>();
         AtomicInteger creations = new AtomicInteger();
         LevelGraphics graphics = new LevelGraphics(object -> {
@@ -49,14 +50,21 @@ public class LevelGraphicsTest {
     }
 
     @Test
-    public void bulletDestroyedAtSpawnIsNeverRenderedAndItsTankTargetDisappears() {
+    public void fourthStandardHitRemovesTankViewAndAdjacentHitsLeaveNoBulletViews() {
         Level level = new Level(2, 1, List.of(), new GridPoint2(0, 0));
-        Tank shooter = level.spawnTank(new GridPoint2(0, 0), 0.4f);
-        Tank target = level.spawnTank(new GridPoint2(1, 0), 0.4f);
-        target.takeDamage(3);
+        Tank shooter = spawnTestTank(level, new GridPoint2(0, 0), 0.4f);
+        Tank target = spawnTestTank(level, new GridPoint2(1, 0), 0.4f);
         List<LevelObject> drawn = new ArrayList<>();
         LevelGraphics graphics = new LevelGraphics(object -> () -> drawn.add(object));
         level.subscribe(graphics);
+
+        for (int hit = 0; hit < 3; hit++) {
+            shooter.shoot();
+            level.update(0f);
+        }
+        graphics.render();
+        assertEquals(List.of(shooter, target), drawn);
+        drawn.clear();
 
         shooter.shoot();
         level.update(0f);

@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static ru.mipt.bit.platformer.TankFixtures.spawnTestTank;
 
 public class TankTest {
 
@@ -104,7 +105,7 @@ public class TankTest {
     @Test
     public void cannotMoveBeyondAnyBoundary() {
         Level level = new Level(1, 1, Collections.emptyList(), new GridPoint2(0, 0));
-        Tank tank = level.spawnTank(new GridPoint2(0, 0), MOVEMENT_DURATION);
+        Tank tank = spawnTestTank(level, new GridPoint2(0, 0), MOVEMENT_DURATION);
 
         for (Direction direction : Direction.values()) {
             tank.move(direction);
@@ -117,7 +118,7 @@ public class TankTest {
 
     @Test
     public void occupiesOnlySourceAndDestinationDuringMove() {
-        Tank tank = emptyLevel.spawnTank(new GridPoint2(1, 1), MOVEMENT_DURATION);
+        Tank tank = spawnTestTank(emptyLevel, new GridPoint2(1, 1), MOVEMENT_DURATION);
         assertTrue(tank.occupies(new GridPoint2(1, 1)));
         assertFalse(tank.occupies(new GridPoint2(2, 1)));
 

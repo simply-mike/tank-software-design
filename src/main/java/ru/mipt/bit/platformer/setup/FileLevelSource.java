@@ -24,6 +24,10 @@ public final class FileLevelSource implements LevelSource {
 
     @Override
     public Level load() throws IOException {
+        return parseLevel(readRows());
+    }
+
+    private List<String> readRows() throws IOException {
         List<String> rows = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(source.openStream(), StandardCharsets.UTF_8))) {
@@ -32,6 +36,10 @@ public final class FileLevelSource implements LevelSource {
                 rows.add(line);
             }
         }
+        return rows;
+    }
+
+    private static Level parseLevel(List<String> rows) {
         if (rows.isEmpty() || rows.get(0).isEmpty()) {
             throw new IllegalArgumentException("Level must contain at least one tile");
         }

@@ -57,10 +57,6 @@ public final class Level implements TileAvailability {
         return new GridPoint2(playerPosition);
     }
 
-    public Tank spawnTank(GridPoint2 coordinates, float movementDuration) {
-        return spawnTank(coordinates, movementDuration, 3, new BulletSettings(1, 0.1f));
-    }
-
     public Tank spawnTank(GridPoint2 coordinates, float movementDuration,
                           int health, BulletSettings bulletSettings) {
         if (!isFree(coordinates)) {
@@ -84,15 +80,7 @@ public final class Level implements TileAvailability {
         List<LevelObject> tickObjects = List.copyOf(objects);
         collisions.resolve();
         do {
-            double step = deltaTime;
-            for (LevelObject object : tickObjects) {
-                if (!object.isDestroyed() && objects.contains(object)) {
-                    step = Math.min(step, object.timeToNextTransition());
-                }
-            }
-            if (step < 0d || Double.isNaN(step) || (step == 0d && deltaTime > 0d)) {
-                throw new IllegalStateException("Transition time must be positive");
-            }
+            double step = nextSimulationStep(tickObjects, deltaTime);
             // All objects reach the same time before contacts are resolved.
             for (LevelObject object : tickObjects) {
                 if (!object.isDestroyed() && objects.contains(object)) {
@@ -102,6 +90,23 @@ public final class Level implements TileAvailability {
             collisions.resolve();
             deltaTime -= step;
         } while (deltaTime > 0d);
+        removeDestroyedObjects();
+    }
+
+    private double nextSimulationStep(List<LevelObject> tickObjects, double remainingTime) {
+        double step = remainingTime;
+        for (LevelObject object : tickObjects) {
+            if (!object.isDestroyed() && objects.contains(object)) {
+                step = Math.min(step, object.timeToNextTransition());
+            }
+        }
+        if (step < 0d || Double.isNaN(step) || (step == 0d && remainingTime > 0d)) {
+            throw new IllegalStateException("Transition time must be positive");
+        }
+        return step;
+    }
+
+    private void removeDestroyedObjects() {
         for (LevelObject object : List.copyOf(objects)) {
             if (object.isDestroyed()) {
                 remove(object);

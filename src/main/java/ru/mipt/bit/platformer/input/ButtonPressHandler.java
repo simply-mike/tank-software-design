@@ -18,7 +18,7 @@ public final class ButtonPressHandler {
         this.submit = submit;
     }
 
-    void bind(Command action, int... keyCodes) {
+    public void bind(Command action, int... keyCodes) {
         bindings.add(new Binding(action, true, keyCodes));
     }
 
