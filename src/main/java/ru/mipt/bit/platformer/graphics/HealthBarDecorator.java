@@ -32,10 +32,12 @@ final class HealthBarDecorator implements Runnable {
     @Override
     public void run() {
         tankView.run();
-        if (!visible.getAsBoolean()) {
-            return;
+        if (visible.getAsBoolean()) {
+            drawHealthBar();
         }
+    }
 
+    private void drawHealthBar() {
         tiles.placeBetweenTileCenters(bar, tank.getCoordinates(),
                 tank.getDestinationCoordinates(), tank.getMovementProgress());
         float y = bar.y + bar.height / 2 + OFFSET_ABOVE_CENTER;
