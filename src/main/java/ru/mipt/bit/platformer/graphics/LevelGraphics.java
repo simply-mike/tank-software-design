@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+/** Output adapter for LevelListener. Adds and removes views as level objects change */
 public final class LevelGraphics implements LevelListener {
 
     private final Function<LevelObject, Runnable> createView;

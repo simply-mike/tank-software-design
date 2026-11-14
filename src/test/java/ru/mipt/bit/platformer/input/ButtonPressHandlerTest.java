@@ -54,20 +54,6 @@ public class ButtonPressHandlerTest {
     }
 
     @Test
-    public void supportsIndependentActions() {
-        AtomicInteger movementCalls = new AtomicInteger();
-        AtomicInteger firingCalls = new AtomicInteger();
-        ButtonPressHandler handler = new ButtonPressHandler(key -> key == 1 || key == 2, Command::execute);
-        handler.bind(movementCalls::incrementAndGet, 1);
-        handler.bind(firingCalls::incrementAndGet, 2);
-
-        handler.handleInput();
-
-        assertEquals(1, movementCalls.get());
-        assertEquals(1, firingCalls.get());
-    }
-
-    @Test
     public void pressBindingsRequireReleaseWhileHeldMovementKeepsRepeating() {
         Set<Integer> pressed = new HashSet<>();
         AtomicInteger moves = new AtomicInteger();

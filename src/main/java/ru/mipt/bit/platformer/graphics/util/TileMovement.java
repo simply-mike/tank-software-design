@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 
+/** Converts cell positions and movement progress to drawing coordinates. Graphics utility */
 public class TileMovement {
 
     private final TiledMapTileLayer tileLayer;

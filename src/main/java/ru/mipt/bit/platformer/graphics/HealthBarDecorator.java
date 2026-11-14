@@ -7,6 +7,7 @@ import ru.mipt.bit.platformer.model.Tank;
 
 import java.util.function.BooleanSupplier;
 
+/** Draws a health bar above a tank view. Infrastructure decorator */
 final class HealthBarDecorator implements Runnable {
 
     private static final float OFFSET_ABOVE_CENTER = 50f;

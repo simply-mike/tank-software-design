@@ -10,6 +10,7 @@ import ru.mipt.bit.platformer.model.Tree;
 import static ru.mipt.bit.platformer.graphics.util.TextureRegionUtils.createBoundingRectangle;
 import static ru.mipt.bit.platformer.graphics.util.TextureRegionUtils.drawUnscaled;
 
+/** Draws trees at their cell positions. Infrastructure layer */
 public final class TreeGraphics implements Disposable {
 
     private final Texture texture;

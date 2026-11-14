@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.util.Properties;
 import java.util.Random;
 
+/** Composition root. Loads settings and starts the desktop game */
 public final class GameDesktopLauncher {
 
     private static final int RANDOM_LEVEL_WIDTH = 10;

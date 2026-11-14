@@ -2,6 +2,7 @@ package ru.mipt.bit.platformer.model;
 
 import com.badlogic.gdx.math.GridPoint2;
 
+/** Domain obstacle that occupies one cell */
 public final class Tree implements Obstacle {
 
     private final GridPoint2 coordinates;

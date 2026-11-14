@@ -1,5 +1,6 @@
 package ru.mipt.bit.platformer.model;
 
+/** Domain value object for bullet damage and movement duration */
 public final class BulletSettings {
 
     private final int damage;

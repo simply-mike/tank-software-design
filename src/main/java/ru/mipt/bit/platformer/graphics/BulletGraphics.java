@@ -11,6 +11,7 @@ import ru.mipt.bit.platformer.model.Bullet;
 import static ru.mipt.bit.platformer.graphics.util.TextureRegionUtils.createBoundingRectangle;
 import static ru.mipt.bit.platformer.graphics.util.TextureRegionUtils.drawUnscaled;
 
+/** Draws bullets at their current positions. Infrastructure layer */
 public final class BulletGraphics implements Disposable {
 
     private static final int SPRITE_SIZE = 12;

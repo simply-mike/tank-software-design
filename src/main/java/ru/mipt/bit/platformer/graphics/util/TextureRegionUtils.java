@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
+/** Draws texture regions and creates their bounds. Graphics utility */
 public final class TextureRegionUtils {
 
     private TextureRegionUtils() {

@@ -2,6 +2,7 @@ package ru.mipt.bit.platformer.model;
 
 import com.badlogic.gdx.math.GridPoint2;
 
+/** Domain contract for objects that occupy cells and receive simulation updates */
 public interface LevelObject {
 
     boolean occupies(GridPoint2 coordinates);

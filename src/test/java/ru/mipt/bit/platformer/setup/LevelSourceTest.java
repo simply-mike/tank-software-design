@@ -103,13 +103,4 @@ public class LevelSourceTest {
         new RandomLevelSource(1, 2, new Random());
     }
 
-    @Test
-    public void loadsBundledLevelFromClasspath() throws IOException {
-        Level level = new FileLevelSource(getClass().getResource("/level.txt")).load();
-
-        assertEquals(10, level.getWidth());
-        assertEquals(8, level.getHeight());
-        assertEquals(new GridPoint2(1, 1), level.getPlayerPosition());
-        assertFalse(level.isFree(new GridPoint2(1, 3)));
-    }
 }

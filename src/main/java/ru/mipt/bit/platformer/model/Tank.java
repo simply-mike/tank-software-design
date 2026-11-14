@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.GridPoint2;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+/** Domain entity that controls health, movement, and shooting. Context for the State pattern */
 public final class Tank implements Obstacle {
 
     private final GridPoint2 coordinates;
@@ -15,8 +16,10 @@ public final class Tank implements Obstacle {
     private final Consumer<Bullet> registerBullet;
     private final int maxHealth;
     private int health;
+    private TankState state;
     private boolean removed;
 
+    // Remaining travel measured in seconds at normal speed, independent of the active state
     private double movementRemaining;
     private Direction direction = Direction.RIGHT;
 
@@ -34,6 +37,7 @@ public final class Tank implements Obstacle {
         this.movementDuration = movementDuration;
         this.maxHealth = health;
         this.health = health;
+        state = TankState.forHealth(health, maxHealth);
         this.bulletSettings = Objects.requireNonNull(bulletSettings);
         this.registerBullet = Objects.requireNonNull(registerBullet);
     }
@@ -59,7 +63,8 @@ public final class Tank implements Obstacle {
         if (isDestroyed()) {
             return;
         }
-        movementRemaining = Math.max(0d, movementRemaining - deltaTime);
+        movementRemaining = deltaTime >= timeToNextTransition()
+                ? 0d : Math.max(0d, movementRemaining - deltaTime * state.movementSpeedFactor());
         if (!isMoving()) {
             coordinates.set(destinationCoordinates);
         }
@@ -87,13 +92,13 @@ public final class Tank implements Obstacle {
 
     @Override
     public double timeToNextTransition() {
-        return isMoving() ? movementRemaining : Double.POSITIVE_INFINITY;
+        return isMoving() ? movementRemaining / state.movementSpeedFactor() : Double.POSITIVE_INFINITY;
     }
 
     public void shoot() {
         if (!isDestroyed()) {
-            registerBullet.accept(new Bullet(direction.calculateDestinationFrom(coordinates),
-                    direction, bulletSettings, this));
+            state.shoot(() -> registerBullet.accept(new Bullet(
+                    direction.calculateDestinationFrom(coordinates), direction, bulletSettings, this)));
         }
     }
 
@@ -103,6 +108,7 @@ public final class Tank implements Obstacle {
         }
         if (!isDestroyed()) {
             health -= damage;
+            state = TankState.forHealth(health, maxHealth);
         }
     }
 

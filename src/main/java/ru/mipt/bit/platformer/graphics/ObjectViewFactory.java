@@ -14,6 +14,7 @@ import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
+/** Creates object views and adds tank health bars. Infrastructure layer */
 public final class ObjectViewFactory implements Function<LevelObject, Runnable>, Disposable {
 
     private static final int BACKGROUND_COLOR_RGBA = 0x252525ff;

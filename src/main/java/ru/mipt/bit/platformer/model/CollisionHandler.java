@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.GridPoint2;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/** Domain service that checks free cells and resolves collisions */
 final class CollisionHandler implements TileAvailability {
 
     private final int width;
