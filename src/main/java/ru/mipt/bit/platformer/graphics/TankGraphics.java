@@ -10,6 +10,7 @@ import ru.mipt.bit.platformer.model.Tank;
 import static ru.mipt.bit.platformer.graphics.util.TextureRegionUtils.createBoundingRectangle;
 import static ru.mipt.bit.platformer.graphics.util.TextureRegionUtils.drawUnscaled;
 
+/** Draws tanks at their current positions. Infrastructure layer */
 public final class TankGraphics implements Disposable {
 
     private final Texture texture;

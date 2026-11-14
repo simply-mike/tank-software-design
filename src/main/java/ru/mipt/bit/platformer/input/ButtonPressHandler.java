@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.IntPredicate;
 
+/** Part of the keyboard input adapter. Adds commands to the queue when keys are pressed */
 public final class ButtonPressHandler {
 
     private final IntPredicate isPressed;

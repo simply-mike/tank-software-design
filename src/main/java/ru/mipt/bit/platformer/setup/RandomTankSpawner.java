@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
+/** Application service that creates tanks on randomly chosen free cells */
 public final class RandomTankSpawner {
 
     private final Random random;

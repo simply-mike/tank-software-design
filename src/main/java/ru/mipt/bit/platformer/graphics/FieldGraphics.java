@@ -18,6 +18,7 @@ import ru.mipt.bit.platformer.graphics.util.TileMovement;
 
 import java.util.NoSuchElementException;
 
+/** Draws the field and manages the viewport. Infrastructure layer */
 public final class FieldGraphics implements Disposable, TilePlacement {
 
     private final TiledMap level;

@@ -30,6 +30,7 @@ import java.util.function.Function;
 import static com.badlogic.gdx.Input.Keys.L;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
+/** Connects input, model, and graphics to libGDX. Also runs the application game loop */
 final class TankGame extends ApplicationAdapter {
 
     private static final float MAX_WINDOW_SCREEN_FRACTION = 0.9f;

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+/** Application strategy that chooses random tank commands */
 public final class RandomTankController implements TankControlStrategy {
 
     private final Tank tank;

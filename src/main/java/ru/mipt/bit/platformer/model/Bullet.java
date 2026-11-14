@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.GridPoint2;
 
 import java.util.Objects;
 
+/** Domain entity that tracks a bullet along its path */
 public final class Bullet implements LevelObject {
 
     private final GridPoint2 coordinates;

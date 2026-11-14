@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/** Output adapter that reads a level from a URL */
 public final class FileLevelSource implements LevelSource {
 
     private final URL source;

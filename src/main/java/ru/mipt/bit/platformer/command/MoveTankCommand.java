@@ -3,6 +3,7 @@ package ru.mipt.bit.platformer.command;
 import ru.mipt.bit.platformer.model.Direction;
 import ru.mipt.bit.platformer.model.Tank;
 
+/** Application command that asks a tank to move */
 public final class MoveTankCommand implements Command {
 
     private final Tank tank;

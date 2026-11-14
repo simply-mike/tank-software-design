@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+/** Application level generator that implements LevelSource */
 public final class RandomLevelSource implements LevelSource {
 
     private static final int MIN_TILES_FOR_PLAYER_MOVE_AND_TREE = 3;

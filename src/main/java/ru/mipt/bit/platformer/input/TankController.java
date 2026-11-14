@@ -15,6 +15,7 @@ import static com.badlogic.gdx.Input.Keys.SPACE;
 import static com.badlogic.gdx.Input.Keys.UP;
 import static com.badlogic.gdx.Input.Keys.W;
 
+/** Input adapter that maps libGDX keys to tank commands */
 public final class TankController implements TankControlStrategy {
 
     private final ButtonPressHandler buttonPressHandler;

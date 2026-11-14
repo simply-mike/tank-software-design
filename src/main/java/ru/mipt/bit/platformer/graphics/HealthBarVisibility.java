@@ -1,5 +1,6 @@
 package ru.mipt.bit.platformer.graphics;
 
+/** Stores whether health bars are visible. Presentation state */
 public final class HealthBarVisibility {
 
     private boolean visible;

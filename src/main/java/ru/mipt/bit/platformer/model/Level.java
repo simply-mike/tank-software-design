@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/** Domain world that manages objects, advances time, and resolves collisions */
 public final class Level implements TileAvailability {
 
     private final int width;
