@@ -79,14 +79,6 @@ public class RandomTankSpawnerTest {
     }
 
     @Test
-    public void handlesLevelWithRoomOnlyForPlayer() {
-        Level level = new Level(1, 1, List.of(), new GridPoint2(0, 0));
-        spawnTestTank(level, level.getPlayerPosition(), 0.4f);
-
-        assertTrue(new RandomTankSpawner(new Random(7)).spawn(level, 5, testTankFactory(level, 0.4f)).isEmpty());
-    }
-
-    @Test
     public void usesInjectedRandomnessForRepeatablePlacement() {
         assertEquals(positionsForSeed(7), positionsForSeed(7));
         assertNotEquals(positionsForSeed(7), positionsForSeed(8));

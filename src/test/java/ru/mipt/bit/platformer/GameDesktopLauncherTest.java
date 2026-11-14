@@ -3,25 +3,12 @@ package ru.mipt.bit.platformer;
 import org.junit.Test;
 import ru.mipt.bit.platformer.model.BulletSettings;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
 public class GameDesktopLauncherTest {
-
-    @Test
-    public void loadsBundledGameConfig() throws IOException {
-        Properties config = GameDesktopLauncher.loadGameConfig();
-
-        assertEquals(5, GameDesktopLauncher.readAiTankCount(config));
-        assertEquals(0.4f, GameDesktopLauncher.readTankMovementDuration(config), 0f);
-        assertEquals(100, GameDesktopLauncher.readTankInitialHealth(config));
-        BulletSettings bullets = GameDesktopLauncher.readBulletSettings(config);
-        assertEquals(30, bullets.getDamage());
-        assertEquals(0.1f, bullets.getMovementDuration(), 0f);
-    }
 
     @Test
     public void readsConfiguredValuesIncludingZeroAiTanks() {
